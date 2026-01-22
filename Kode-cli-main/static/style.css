@@ -1,0 +1,268 @@
+:root {
+    --bg-color: #0f1117;
+    --panel-bg: #1a1d24;
+    --border-color: #2e323b;
+    --accent-color: #3b82f6;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --terminal-bg: #0d0d0d;
+    --terminal-text: #33ff00;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    /* Prevent body scroll */
+}
+
+#main-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+/* Chat Panel (Left) */
+#chat-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+}
+
+#chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#chat-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+#chat-header i {
+    color: var(--accent-color);
+}
+
+#chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message {
+    max-width: 90%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.message.user {
+    align-self: flex-end;
+    background-color: var(--accent-color);
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    background-color: #272a34;
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 2px;
+    color: var(--text-primary);
+}
+
+.message.system {
+    align-self: center;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-style: activity;
+    border: none;
+    padding: 5px;
+}
+
+/* Input Area */
+#input-container {
+    padding: 20px;
+    background-color: var(--panel-bg);
+    border-top: 1px solid var(--border-color);
+}
+
+#input-box {
+    background-color: #272a34;
+    /* Slightly lighter than panel */
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s;
+}
+
+#input-box:focus-within {
+    border-color: var(--accent-color);
+}
+
+#mode-selector {
+    width: fit-content;
+    background: #373b47;
+    border: none;
+    color: var(--text-secondary);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+
+#message-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    resize: none;
+    height: 50px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+#input-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#input-actions button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+}
+
+#input-actions button:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#send-btn {
+    color: var(--accent-color) !important;
+}
+
+/* VM Panel (Right) */
+#vm-panel {
+    flex: 1;
+    /* Takes remaining space */
+    background-color: var(--terminal-bg);
+    display: flex;
+    flex-direction: column;
+}
+
+#vm-header {
+    background-color: #1a1d24;
+    /* Match panel bg */
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+
+.vm-title {
+    font-family: 'Consolas', monospace;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.vm-status {
+    font-size: 0.8rem;
+    color: #4ade80;
+    /* Green */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #4ade80;
+    border-radius: 50%;
+}
+
+#vm-terminal {
+    flex: 1;
+    padding: 20px;
+    font-family: 'jetBrains Mono', 'Consolas', monospace;
+    font-size: 0.9rem;
+    overflow-y: auto;
+    color: #d4d4d4;
+    line-height: 1.4;
+}
+
+.terminal-line {
+    margin-bottom: 2px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.vm-stdout {
+    color: var(--text-primary);
+}
+
+.vm-stderr {
+    color: #ef4444;
+}
+
+/* Red */
+.vm-cmd {
+    color: #facc15;
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+
+/* Yellow */
+.system-msg {
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #373b47;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
+}
