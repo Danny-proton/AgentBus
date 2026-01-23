@@ -25,7 +25,7 @@ from services.cost_tracker import CostTracker
 from services.log_service import init_log_service, start_log_service, stop_log_service, get_log_service
 from services.workspace import init_workspace, get_workspace
 from tools.knowledge_bus import init_knowledge_bus, get_knowledge_bus
-from tools.human_in_loop import get_human_loop
+from tools.human_in_loop import init_human_loop, get_human_tool
 
 # 配置日志
 logging.basicConfig(
@@ -38,11 +38,12 @@ logger = logging.getLogger(__name__)
 session_manager: SessionManager = None
 cost_tracker: CostTracker = None
 short_term_memory: ShortTermMemory = None
+human_tool = None
 
 
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     """应用生命周期管理"""
-    global session_manager, cost_tracker, short_term_memory
+    global session_manager, cost_tracker, short_term_memory, human_tool
     
     logger.info("🚀 启动 AgentBus 服务...")
     
@@ -74,9 +75,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     # 6. 初始化会话管理器
     session_manager = SessionManager(
         memory=short_term_memory,
-        cost_tracker=cost_tracker,
-        workspace=workspace,
+        cost_tracker=cost_tracker
+    )
+    # 存储额外的服务
+    session_manager.workspace = workspace
+    session_manager.knowledge_bus = knowledge_bus
+    session_manager.log_service = log_service
+    
+    # 7. 初始化人在回路服务
+    from tools.human_in_loop import init_human_loop
+    human_tool = init_human_loop(
         knowledge_bus=knowledge_bus,
+        workspace=workspace,
         log_service=log_service
     )
     

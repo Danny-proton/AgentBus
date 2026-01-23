@@ -1,16 +1,17 @@
 """
 Knowledge Bus 工具
 作为所有 Agent 的必备工具，提供长期记忆的"小黑板"功能
+使用 Markdown 文件作为存储后端，方便人类阅读和编辑
 """
 
 import asyncio
-import json
-import hashlib
+import re
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from uuid import uuid4
+import hashlib
 
 from tools.base import BaseTool, ToolResult
 
@@ -22,6 +23,7 @@ class KnowledgeBus:
     """
     知识总线
     简洁的长期记忆"小黑板"，用于存储关键信息
+    存储格式为 Markdown
     """
     
     def __init__(self, bus_file_path: str):
@@ -33,30 +35,122 @@ class KnowledgeBus:
         self._load()
     
     def _load(self):
-        """加载知识总线"""
+        """加载知识总线 (Markdown 解析)"""
         if self.bus_file.exists():
             try:
-                with open(self.bus_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    self._cache = data.get("entries", {})
+                content = self.bus_file.read_text(encoding='utf-8')
+                self._parse_markdown(content)
             except Exception as e:
                 logger.error(f"Failed to load knowledge bus: {e}")
                 self._cache = {}
         else:
             self._cache = {}
-    
-    def _save(self):
-        """保存知识总线"""
-        try:
-            data = {
-                "updated_at": datetime.now().isoformat(),
-                "entries": self._cache
+            self._save()  # 创建初始文件
+
+    def _parse_markdown(self, content: str):
+        """解析 Markdown 内容到缓存"""
+        self._cache = {}
+        
+        # 正则匹配：## [id] key
+        # 然后是元数据块，然后是内容，直到下一个 ## 或结束
+        pattern = re.compile(
+            r'^## \[(?P<id>[a-f0-9]+)\] (?P<key>.+?)\n'  # header
+            r'(?P<body>.*?)'                             # body (lazy)
+            r'(?=\n## \[|\Z)',                           # lookahead for next entry or EOF
+            re.MULTILINE | re.DOTALL
+        )
+        
+        for match in pattern.finditer(content):
+            entry_id = match.group("id")
+            key = match.group("key").strip()
+            body = match.group("body").strip()
+            
+            # 解析元数据和值
+            category = "general"
+            updated_at = datetime.now().isoformat()
+            value = body
+            
+            # 尝试提取 metadata 行 (简单做法：查找 **Key**: Value 格式)
+            meta_pattern = re.compile(r'^\*\*(.+?)\*\*: (.*)$', re.MULTILINE)
+            
+            # 分离元数据和实际内容
+            lines = body.split('\n')
+            content_lines = []
+            
+            metadata = {}
+            for line in lines:
+                m = meta_pattern.match(line)
+                if m:
+                    meta_key = m.group(1).lower()
+                    meta_val = m.group(2).strip()
+                    if meta_key == "category":
+                        category = meta_val
+                    elif meta_key == "updated":
+                        updated_at = meta_val
+                    else:
+                        metadata[meta_key] = meta_val
+                else:
+                    if line.strip(): # 只需要保留非空行，或者全部保留？
+                        # 这里简单处理，如果遇到空行且还没开始内容，跳过
+                        pass
+                    content_lines.append(line)
+            
+            # 重新组合值，去除开头的元数据行造成的空行
+            # 简单策略：找到第一个不匹配 metadata 的行作为内容开始
+            real_content = []
+            is_content = False
+            for line in lines:
+                if not is_content:
+                    if meta_pattern.match(line) or not line.strip():
+                        continue
+                    is_content = True
+                
+                real_content.append(line)
+            
+            value = "\n".join(real_content).strip()
+
+            self._cache[entry_id] = {
+                "id": entry_id,
+                "key": key,
+                "value": value,
+                "category": category,
+                "updated_at": updated_at,
+                "metadata": metadata
             }
-            with open(self.bus_file, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def _save(self):
+        """保存知识总线 (Markdown 生成)"""
+        try:
+            content = "# Knowledge Bus\n\n"
+            content += f"> Last Updated: {datetime.now().isoformat()}\n\n"
+            
+            # 按类别分组排序
+            sorted_entries = sorted(
+                self._cache.values(), 
+                key=lambda x: (x.get("category", "general"), x.get("updated_at", ""))
+            )
+            
+            current_category = None
+            
+            for entry in sorted_entries:
+                # 写入条目
+                content += f"## [{entry['id']}] {entry['key']}\n"
+                content += f"**Category**: {entry.get('category', 'general')}\n"
+                content += f"**Updated**: {entry.get('updated_at')}\n"
+                
+                # 写入额外元数据
+                if entry.get("metadata"):
+                    for k, v in entry["metadata"].items():
+                        content += f"**{k.capitalize()}**: {v}\n"
+                
+                content += "\n"
+                content += f"{entry['value']}\n\n"
+            
+            self.bus_file.write_text(content, encoding='utf-8')
+            
         except Exception as e:
             logger.error(f"Failed to save knowledge bus: {e}")
-    
+
     def _generate_id(self, key: str) -> str:
         """生成条目 ID"""
         return hashlib.md5(key.encode()).hexdigest()[:8]
@@ -69,191 +163,109 @@ class KnowledgeBus:
         expires_at: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None
     ) -> str:
-        """
-        存储信息到知识总线
-        
-        Args:
-            key: 键（用于检索）
-            value: 值（可以是路径、信息等）
-            category: 类别
-            expires_at: 过期时间（ISO 格式）
-            metadata: 元数据
-        
-        Returns:
-            str: 条目 ID
-        """
+        """存储信息"""
         async with self._lock:
-            entry_id = self._generate_id(key)
+            # 检查 key 是否已存在，如果存在复用 ID
+            entry_id = self._generate_id(key) # 默认 ID 策略
+            
+            # 查找是否已有同名 key 但 ID 不同（防止冲突，或者更新逻辑）
+            # 这里简化逻辑：ID 由 key 哈希决定，所以 key 相同 ID 相同，覆盖更新
             
             entry = {
                 "id": entry_id,
                 "key": key,
                 "value": value,
                 "category": category,
-                "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
-                "expires_at": expires_at,
-                "metadata": metadata or {},
-                "access_count": 0
+                "metadata": metadata or {}
             }
             
             self._cache[entry_id] = entry
             self._save()
             
-            logger.info(f"KnowledgeBus: stored {key} -> {value}")
-            
             return entry_id
     
     async def get(self, key: str) -> Optional[Dict[str, Any]]:
-        """
-        从知识总线获取信息
-        
-        Args:
-            key: 键
-        
-        Returns:
-            Dict: 条目信息，不存在返回 None
-        """
+        """获取信息"""
         async with self._lock:
-            entry_id = self._generate_id(key)
-            
-            if entry_id in self._cache:
-                entry = self._cache[entry_id]
-                entry["access_count"] += 1
-                entry["updated_at"] = datetime.now().isoformat()
-                self._save()
-                return entry
-            
+            # 需要遍历查找 key
+            for entry in self._cache.values():
+                if entry["key"] == key:
+                    return entry
             return None
     
     async def get_by_id(self, entry_id: str) -> Optional[Dict[str, Any]]:
-        """
-        通过 ID 获取条目
-        
-        Args:
-            entry_id: 条目 ID
-        
-        Returns:
-            Dict: 条目信息
-        """
+        """通过 ID 获取"""
         async with self._lock:
             return self._cache.get(entry_id)
     
-    async def get_by_category(self, category: str) -> List[Dict[str, Any]]:
-        """
-        按类别获取所有条目
-        
-        Args:
-            category: 类别
-        
-        Returns:
-            List[Dict]: 条目列表
-        """
-        async with self._lock:
-            return [
-                entry for entry in self._cache.values()
-                if entry.get("category") == category
-            ]
-    
     async def get_all(self) -> List[Dict[str, Any]]:
-        """获取所有条目"""
+        """获取所有"""
         async with self._lock:
             return list(self._cache.values())
-    
+
+    async def get_by_category(self, category: str) -> List[Dict[str, Any]]:
+         async with self._lock:
+            return [e for e in self._cache.values() if e.get("category") == category]
+
     async def delete(self, key: str) -> bool:
-        """
-        删除条目
-        
-        Args:
-            key: 键
-        
-        Returns:
-            bool: 是否成功删除
-        """
         async with self._lock:
-            entry_id = self._generate_id(key)
+            target_id = None
+            for eid, entry in self._cache.items():
+                if entry["key"] == key:
+                    target_id = eid
+                    break
             
-            if entry_id in self._cache:
-                del self._cache[entry_id]
+            if target_id:
+                del self._cache[target_id]
                 self._save()
                 return True
-            
             return False
-    
-    async def delete_by_id(self, entry_id: str) -> bool:
-        """
-        通过 ID 删除条目
-        
-        Args:
-            entry_id: 条目 ID
-        
-        Returns:
-            bool: 是否成功删除
-        """
-        async with self._lock:
-            if entry_id in self._cache:
-                del self._cache[entry_id]
-                self._save()
-                return True
-            
-            return False
-    
+
     async def clear(self):
-        """清空知识总线"""
         async with self._lock:
-            self._cache.clear()
+            self._cache = {}
             self._save()
-    
+
     def get_path(self) -> str:
-        """获取知识总线文件路径"""
         return str(self.bus_file)
 
 
 class KnowledgeBusTool(BaseTool):
     """
     Knowledge Bus 工具
-    作为所有 Agent 的必备工具
     """
     
     name = "knowledge_bus"
     description = """Store and retrieve long-term memory information (Knowledge Bus).
+Entries are stored in a Markdown file for readability.
 Use this tool when:
-- A subagent or task completes and you want to save context
-- You need to share information across agents (IPs, usernames, passwords, etc.)
-- You need to remember key information for later retrieval
-- You want to reference information by ID for reporting
+- You want to save context or key findings
+- You need to share information across agents
+- You need to remember things for later
 
-The Knowledge Bus is a simple "blackboard" for long-term memory.
-All stored information is referenced by path-like entries in the bus."""
+All stored information is referenced by ID and Key."""
     
     parameters = {
         "type": "object",
         "properties": {
             "action": {
                 "type": "string",
-                "enum": ["put", "get", "get_all", "get_by_category", "delete", "clear"],
-                "description": "Operation: put (store), get (retrieve by key), get_all (list all), get_by_category (filter), delete (remove), clear (empty)"
+                "enum": ["put", "get", "get_all", "delete"],
+                "description": "Operation: put (store), get (retrieve by key), get_all (list keys), delete (remove)"
             },
             "key": {
                 "type": "string",
-                "description": "Key to store/retrieve (for put/get actions)"
+                "description": "Topic or Key for the information"
             },
             "value": {
                 "type": "string",
-                "description": "Value to store (for put action)"
+                "description": "Content to store (for put action)"
             },
             "category": {
                 "type": "string",
-                "description": "Category for organization (default: general)",
+                "description": "Category (default: general)",
                 "default": "general"
-            },
-            "entry_id": {
-                "type": "string",
-                "description": "Entry ID (for get_by_id/delete_by_id actions)"
-            },
-            "metadata": {
-                "type": "object",
-                "description": "Additional metadata (for put action)"
             }
         },
         "required": ["action"]
@@ -268,147 +280,40 @@ All stored information is referenced by path-like entries in the bus."""
         action: str,
         key: Optional[str] = None,
         value: Optional[str] = None,
-        category: str = "general",
-        entry_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        category: str = "general"
     ) -> ToolResult:
-        """执行 Knowledge Bus 操作"""
         try:
             if action == "put":
                 if not key or not value:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="key and value are required for put action"
-                    )
-                
-                entry_id = await self.knowledge_bus.put(
-                    key=key,
-                    value=value,
-                    category=category,
-                    metadata=metadata
-                )
-                
-                return ToolResult(
-                    success=True,
-                    content=f"Stored in Knowledge Bus [ID: {entry_id}]\nKey: {key}\nValue: {value}\nCategory: {category}"
-                )
+                    return ToolResult(success=False, content="Missing key or value")
+                eid = await self.knowledge_bus.put(key, value, category)
+                return ToolResult(success=True, content=f"Stored [{eid}] {key}")
             
             elif action == "get":
                 if not key:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="key is required for get action"
-                    )
-                
+                    return ToolResult(success=False, content="Missing key")
                 entry = await self.knowledge_bus.get(key)
-                
                 if entry:
-                    return ToolResult(
-                        success=True,
-                        content=f"Found in Knowledge Bus [ID: {entry['id']}]\nKey: {entry['key']}\nValue: {entry['value']}\nCategory: {entry['category']}\nAccess Count: {entry['access_count']}"
-                    )
+                    return ToolResult(success=True, content=f"[{entry['id']}] {entry['key']}:\n{entry['value']}")
                 else:
-                    return ToolResult(
-                        success=True,
-                        content=f"No entry found for key: {key}"
-                    )
-            
-            elif action == "get_by_id":
-                if not entry_id:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="entry_id is required for get_by_id action"
-                    )
-                
-                entry = await self.knowledge_bus.get_by_id(entry_id)
-                
-                if entry:
-                    return ToolResult(
-                        success=True,
-                        content=f"Entry [ID: {entry['id']}]\nKey: {entry['key']}\nValue: {entry['value']}\nCategory: {entry['category']}"
-                    )
-                else:
-                    return ToolResult(
-                        success=True,
-                        content=f"No entry found with ID: {entry_id}"
-                    )
+                    return ToolResult(success=True, content="Not found")
             
             elif action == "get_all":
                 entries = await self.knowledge_bus.get_all()
-                
-                if not entries:
-                    return ToolResult(
-                        success=True,
-                        content="Knowledge Bus is empty"
-                    )
-                
-                content = f"Knowledge Bus contains {len(entries)} entries:\n\n"
-                for entry in entries:
-                    content += f"[{entry['id']}] {entry['key']} = {entry['value']} ({entry['category']})\n"
-                
-                return ToolResult(success=True, content=content)
-            
-            elif action == "get_by_category":
-                entries = await self.knowledge_bus.get_by_category(category)
-                
-                if not entries:
-                    return ToolResult(
-                        success=True,
-                        content=f"No entries found in category: {category}"
-                    )
-                
-                content = f"Entries in category '{category}':\n\n"
-                for entry in entries:
-                    content += f"[{entry['id']}] {entry['key']} = {entry['value']}\n"
-                
-                return ToolResult(success=True, content=content)
+                summary = "\n".join([f"- [{e['id']}] {e['key']} ({e.get('category')})" for e in entries])
+                return ToolResult(success=True, content=f"Knowledge Bus Entries:\n{summary}")
             
             elif action == "delete":
                 if not key:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="key is required for delete action"
-                    )
-                
+                    return ToolResult(success=False, content="Missing key")
                 success = await self.knowledge_bus.delete(key)
-                
-                if success:
-                    return ToolResult(
-                        success=True,
-                        content=f"Deleted entry with key: {key}"
-                    )
-                else:
-                    return ToolResult(
-                        success=True,
-                        content=f"No entry found with key: {key}"
-                    )
-            
-            elif action == "clear":
-                await self.knowledge_bus.clear()
-                
-                return ToolResult(
-                    success=True,
-                    content="Knowledge Bus cleared"
-                )
+                return ToolResult(success=True, content="Deleted" if success else "Not found")
             
             else:
-                return ToolResult(
-                    success=False,
-                    content="",
-                    error=f"Unknown action: {action}"
-                )
-        
+                return ToolResult(success=False, content=f"Unknown action: {action}")
+                
         except Exception as e:
-            logger.exception(f"KnowledgeBusTool error: {e}")
-            return ToolResult(
-                success=False,
-                content="",
-                error=str(e)
-            )
+            return ToolResult(success=False, content=str(e))
 
 
 # 全局 Knowledge Bus 实例
@@ -419,7 +324,7 @@ def get_knowledge_bus() -> KnowledgeBus:
     """获取全局 Knowledge Bus 实例"""
     global _knowledge_bus
     if _knowledge_bus is None:
-        raise RuntimeError("KnowledgeBus not initialized. Call init_knowledge_bus first.")
+        raise RuntimeError("KnowledgeBus not initialized.")
     return _knowledge_bus
 
 

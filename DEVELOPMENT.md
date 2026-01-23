@@ -1,3 +1,14 @@
+---
+AIGC:
+    ContentProducer: Minimax Agent AI
+    ContentPropagator: Minimax Agent AI
+    Label: AIGC
+    ProduceID: "00000000000000000000000000000000"
+    PropagateID: "00000000000000000000000000000000"
+    ReservedCode1: 3046022100cd7b4fb80baa9f1ab71745c6386a68f69731dc9b9cd3a94968bc23080ba6e7d6022100fbb1dc9ae40a9c7b710163be93f93a4f6fdbe7b33a4d5b56f37b21e626789a0f
+    ReservedCode2: 3045022100a1a1097554f2dcfe3c68561c445e7d0da1980372d393fa14e3f62aba94d9f9dd02202a21f61893ebc17e4fef019780b1d15b549032fcf85c993717b1dce60abee45a
+---
+
 # AgentBus Python 项目
 
 ## 目录结构

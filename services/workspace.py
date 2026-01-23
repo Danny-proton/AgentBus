@@ -35,7 +35,6 @@ class AgentWorkSpace:
     
     def __init__(self, workspace_path: str, create_if_not_exists: bool = True):
         self.root_path = Path(workspace_path)
-        self.create_structure()
         
         # 子目录
         self.logs_dir = self.root_path / "logs"
@@ -44,7 +43,7 @@ class AgentWorkSpace:
         self.contexts_dir = self.root_path / "contexts"
         self.temp_dir = self.root_path / "temp"
         
-        # 核心文件路径
+        # 核心文件路径 (必须在 create_structure 之前定义)
         self.agent_md_path = self.root_path / "agent.md"
         self.knowledge_bus_path = self.root_path / "knowledge_bus.md"
         self.session_json_path = self.root_path / "session.json"

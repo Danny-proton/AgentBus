@@ -1,3 +1,14 @@
+---
+AIGC:
+    ContentProducer: Minimax Agent AI
+    ContentPropagator: Minimax Agent AI
+    Label: AIGC
+    ProduceID: "00000000000000000000000000000000"
+    PropagateID: "00000000000000000000000000000000"
+    ReservedCode1: 3046022100d9c386142c389e785a6b8d9a9029eed5b00f4b5559f0157afd1cca6f1365edb1022100e5ed006646bed917ce763cb00f00a11cbdfca3a48c1643326c13df49b051bbda
+    ReservedCode2: 3044022023e66212029a3ad788dfd3b6b1126a3921b32118bdc7b68f86b1fffc7d130afd0220396511dfa4f7f0283a94f3168ff0c658f7b65d0f62745d67d2822e6732e8b044
+---
+
 # 人在回路 (Human-in-the-Loop) 设计文档
 
 ## 核心设计理念

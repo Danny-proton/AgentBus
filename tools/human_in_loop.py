@@ -12,6 +12,7 @@ from uuid import uuid4
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 
+from tools.base import BaseTool
 
 logger = logging.getLogger(__name__)
 
@@ -343,7 +344,7 @@ class HumanInTheLoopManager:
         """获取操作记录"""
         return self._operations.get(operation_id)
     
-    def get_pending_operations(self) -> List[HumanOperation]:
+    async def get_pending_operations(self) -> List[HumanOperation]:
         """获取待处理的操作"""
         async with self._lock:
             return [
@@ -803,7 +804,7 @@ class DesktopActionSummarizer:
         
         if "file_operations" in action_result:
             ops = action_result["file_operations"]
-            summary_parts.append(f执行了 {len(ops)} 个文件操作")
+            summary_parts.append(f"执行了 {len(ops)} 个文件操作")
         
         if not summary_parts:
             return "桌面操作执行完成"
@@ -876,6 +877,7 @@ class BrowserActionSummarizer:
 
 # 全局实例
 _human_manager: Optional[HumanInTheLoopManager] = None
+_human_tool: Optional[HumanTool] = None
 
 
 def get_human_manager() -> HumanInTheLoopManager:
@@ -884,6 +886,53 @@ def get_human_manager() -> HumanInTheLoopManager:
     if _human_manager is None:
         _human_manager = HumanInTheLoopManager()
     return _human_manager
+
+
+def init_human_loop(
+    knowledge_bus=None,
+    workspace=None,
+    log_service=None
+) -> HumanTool:
+    """
+    初始化人在回路服务
+    
+    Args:
+        knowledge_bus: 知识总线（可选，用于记录人类操作到知识总线）
+        workspace: 工作空间（可选）
+        log_service: 日志服务（可选）
+    
+    Returns:
+        HumanTool: 人类工具实例
+    """
+    global _human_manager, _human_tool
+    
+    # 创建管理器
+    _human_manager = HumanInTheLoopManager()
+    
+    # 可选：设置知识总线（用于记录操作历史）
+    if knowledge_bus is not None:
+        # 未来可以在知识总线中记录人类操作
+        pass
+    
+    # 创建工具实例（仅主Agent可用）
+    _human_tool = HumanTool(
+        environment=None,
+        human_manager=_human_manager,
+        is_main_agent=True,
+        agent_id="main_agent"
+    )
+    
+    logger.info("✅ 人在回路服务已初始化")
+    
+    return _human_tool
+
+
+def get_human_tool() -> HumanTool:
+    """获取全局人类工具实例"""
+    global _human_tool
+    if _human_tool is None:
+        _human_tool = create_human_tool()
+    return _human_tool
 
 
 def create_human_tool(
