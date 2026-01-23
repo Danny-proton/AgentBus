@@ -262,7 +262,7 @@ class FileTreeTool(BaseTool):
         )
 
 
-def register_search_tools(registry, environment):
+async def register_search_tools(registry, environment):
     """注册所有搜索工具"""
     
     tools = [
@@ -274,4 +274,4 @@ def register_search_tools(registry, environment):
     ]
     
     for tool in tools:
-        registry.register(tool, category="search")
+        await registry.register(tool, category="search")

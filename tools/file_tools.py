@@ -277,7 +277,7 @@ class FileInfoTool(BaseTool):
         return ToolResult(success=True, content=content)
 
 
-def register_file_tools(registry, environment):
+async def register_file_tools(registry, environment):
     """注册所有文件工具"""
     
     tools = [
@@ -292,4 +292,4 @@ def register_file_tools(registry, environment):
     ]
     
     for tool in tools:
-        registry.register(tool, category="file_operations")
+        await registry.register(tool, category="file_operations")

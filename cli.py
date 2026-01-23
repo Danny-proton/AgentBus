@@ -63,18 +63,18 @@ async def run_direct_task(task: str, model: str = None):
     
     # 注册 Knowledge Bus 工具
     kb_tool = create_knowledge_bus_tool(knowledge_bus)
-    tool_registry.register(kb_tool, category="memory")
+    await tool_registry.register(kb_tool, category="memory")
     
     # 注册 Terminal 工具 (Safe Mode = False for CLI)
     # TODO: 以后可以从 Runtime/Env 获取 environment
     from runtime.local import LocalEnvironment
     env = LocalEnvironment(workspace)
-    register_terminal_tools(tool_registry, env, safe_mode=False)
+    await register_terminal_tools(tool_registry, env, safe_mode=False)
     
     # 注册 Skills (如果存在)
     try:
         from tools.skills import register_skills_tools
-        register_skills_tools(tool_registry, env)
+        await register_skills_tools(tool_registry, env)
     except ImportError:
         pass
 

@@ -236,7 +236,7 @@ class GitTool(BaseTool):
         )
 
 
-def register_terminal_tools(registry, environment, safe_mode: bool = False):
+async def register_terminal_tools(registry, environment, safe_mode: bool = False):
     """注册所有终端工具"""
     
     terminal_tool = TerminalExecuteTool(environment, safe_mode=safe_mode)
@@ -244,7 +244,7 @@ def register_terminal_tools(registry, environment, safe_mode: bool = False):
     python_tool = PythonExecuteTool(environment)
     git_tool = GitTool(environment)
     
-    registry.register(terminal_tool, category="terminal")
-    registry.register(stream_tool, category="terminal")
-    registry.register(python_tool, category="terminal")
-    registry.register(git_tool, category="terminal")
+    await registry.register(terminal_tool, category="terminal")
+    await registry.register(stream_tool, category="terminal")
+    await registry.register(python_tool, category="terminal")
+    await registry.register(git_tool, category="terminal")

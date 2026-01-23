@@ -232,14 +232,91 @@ Note: This tool simulates interaction."""
         return ToolResult(success=True, content=f"Computer action '{action}' simulated. (Real implementation requires GUI binding)")
 
 
-def register_skills_tools(registry, environment):
+class WebFetchTool(BaseTool):
+    """
+    Web Fetch Tool
+    Simple implementation for fetching web content
+    """
+    name = "web_fetch"
+    description = "Fetch content from a URL"
+    
+    parameters = {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "The URL to fetch"
+            }
+        },
+        "required": ["url"]
+    }
+    
+    async def execute(self, url: str) -> ToolResult:
+        # Simplified implementation
+        return ToolResult(success=True, content=f"Content from {url} (Simulated)")
+
+
+class TaskTool(BaseTool):
+    """
+    Task Tool
+    Simple implementation for task management
+    """
+    name = "task"
+    description = "Manage tasks"
+    
+    parameters = {
+        "type": "object",
+        "properties": {
+            "action": {
+                "type": "string",
+                "enum": ["add", "list", "complete"],
+                "description": "Task action"
+            },
+            "description": {
+                "type": "string",
+                "description": "Task description"
+            }
+        },
+        "required": ["action"]
+    }
+    
+    async def execute(self, action: str, description: Optional[str] = None) -> ToolResult:
+        return ToolResult(success=True, content=f"Task action '{action}' processed (Simulated)")
+
+
+class NoteTool(BaseTool):
+    """
+    Note Tool
+    Simple implementation for taking notes
+    """
+    name = "note"
+    description = "Take notes"
+    
+    parameters = {
+        "type": "object",
+        "properties": {
+            "content": {
+                "type": "string",
+                "description": "Note content"
+            }
+        },
+        "required": ["content"]
+    }
+    
+    async def execute(self, content: str) -> ToolResult:
+        return ToolResult(success=True, content="Note recorded (Simulated)")
+
+
+async def register_skills_tools(registry, environment):
     """注册所有技能工具"""
     tools = [
         CriticTool(environment),
         FileEditorTool(environment),
         ComputerTool(environment),
-        # TaskTool 和 NoteTool 可以视情况保留或移除，这里简单起见保留
+        WebFetchTool(environment),
+        TaskTool(environment),
+        NoteTool(environment),
     ]
     
     for tool in tools:
-        registry.register(tool, category="skills")
+        await registry.register(tool, category="skills")

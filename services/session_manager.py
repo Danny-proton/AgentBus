@@ -84,13 +84,13 @@ class Session:
             from config.settings import get_settings
             settings = get_settings()
             
-            register_file_tools(self._tool_registry, self._environment)
-            register_terminal_tools(
+            await register_file_tools(self._tool_registry, self._environment)
+            await register_terminal_tools(
                 self._tool_registry,
                 self._environment,
                 safe_mode=settings.security.safe_mode
             )
-            register_search_tools(self._tool_registry, self._environment)
+            await register_search_tools(self._tool_registry, self._environment)
             
             # 初始化 Agent 组件
             llm_client = LLMClient()

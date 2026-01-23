@@ -5,6 +5,7 @@
 import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock
+from runtime.abstract import CommandResult, FileInfo
 
 
 @pytest.fixture
@@ -35,13 +36,13 @@ def mock_environment():
 
 
 @pytest.fixture
-def tool_registry(mock_environment):
+async def tool_registry(mock_environment):
     """创建工具注册中心"""
     from tools.registry import ToolRegistry
     from tools.file_tools import register_file_tools
     
     registry = ToolRegistry()
-    register_file_tools(registry, mock_environment)
+    await register_file_tools(registry, mock_environment)
     
     return registry
 
@@ -82,7 +83,8 @@ async def test_list_dir_tool(tool_registry, mock_environment):
     assert "file.py" in result.content
 
 
-def test_tool_schemas(tool_registry):
+@pytest.mark.asyncio
+async def test_tool_schemas(tool_registry):
     """测试工具 Schema 生成"""
     schemas = tool_registry.get_tool_schemas()
     
@@ -96,16 +98,17 @@ def test_tool_schemas(tool_registry):
     assert "description" in schema["function"]
 
 
-def test_tool_enable_disable(tool_registry):
+@pytest.mark.asyncio
+async def test_tool_enable_disable(tool_registry):
     """测试工具启用/禁用"""
     tool = tool_registry.get_tool("file_read")
     
     assert tool.enabled
     
-    tool_registry.disable_tool("file_read")
+    await tool_registry.disable_tool("file_read")
     
     assert not tool.enabled
     
-    tool_registry.enable_tool("file_read")
+    await tool_registry.enable_tool("file_read")
     
     assert tool.enabled
