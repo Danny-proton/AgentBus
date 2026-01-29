@@ -1,972 +1,679 @@
 """
-Human-in-the-Loop 工具
-核心设计：把人类当作一个强大的工具，支持多种操作模式
+人在回路 (Human-in-the-Loop) 模块
+
+核心设计理念：
+- Agent 可以将人类视为一个强大的"工具"来调用
+- 支持多种交互模式：bash操作、桌面操作、浏览器操作、反馈
+- 人类操作完成后，Agent 会总结其行为并继续执行
+- 支持超时机制和操作取消
 """
 
 import asyncio
-import json
-import logging
+import uuid
 from datetime import datetime
-from typing import Optional, Dict, Any, List, Callable
-from uuid import uuid4
-from dataclasses import dataclass, field, asdict
 from enum import Enum
+from typing import Any, Dict, Optional
+from dataclasses import dataclass, field
 
-from tools.base import BaseTool
+from agent_hard_tool import (
+    BaseTool,
+    ToolResult,
+    ToolStatus,
+    Parameter,
+    ParameterType
+)
+from config.settings import get_settings
+from services.log_service import get_logger
 
-logger = logging.getLogger(__name__)
-
-
-class HumanActionType(Enum):
-    """人类操作类型"""
-    FEEDBACK = "feedback"           # 人类提出意见/建议
-    BASH = "bash"                   # 人类执行bash命令
-    DESKTOP = "desktop"             # 人类执行桌面操作
-    BROWSER = "browser"             # 人类执行浏览器操作
-    REVIEW = "review"               # 人类审查代码/内容
-    APPROVE = "approve"             # 人类批准操作
+logger = get_logger(__name__)
 
 
-class HumanOperationStatus(Enum):
+class HumanActionType(str, Enum):
+    """人在回路支持的操作类型"""
+    BASH = "bash"           # Bash命令操作
+    DESKTOP = "desktop"     # 桌面操作
+    BROWSER = "browser"     # 浏览器操作
+    FEEDBACK = "feedback"   # 简单反馈/建议
+
+
+class HumanActionStatus(str, Enum):
     """操作状态"""
-    PENDING = "pending"             # 待处理
-    IN_PROGRESS = "in_progress"     # 进行中
-    COMPLETED = "completed"         # 已完成
-    CANCELLED = "cancelled"         # 已取消
-    FAILED = "failed"               # 失败
+    PENDING = "pending"     # 等待人类开始
+    IN_PROGRESS = "in_progress"  # 人类正在执行
+    COMPLETED = "completed"  # 人类完成操作
+    FAILED = "failed"       # 操作失败
+    CANCELLED = "cancelled" # 被取消
+    TIMEOUT = "timeout"     # 超时
+
+
+class HumanLoopError(Exception):
+    """人在回路基础异常"""
+    pass
+
+
+class HumanOperationNotFoundError(HumanLoopError):
+    """操作不存在"""
+    pass
+
+
+class HumanOperationStatusError(HumanLoopError):
+    """操作状态错误"""
+    pass
 
 
 @dataclass
 class HumanOperation:
-    """人类操作记录"""
+    """
+    记录一次人类操作请求
+    
+    Attributes:
+        operation_id: 唯一操作ID
+        action_type: 操作类型 (bash/desktop/browser/feedback)
+        request_content: 请求内容
+        status: 当前状态
+        created_at: 创建时间
+        completed_at: 完成时间
+        result: 操作结果
+        summary: 操作总结（Agent汇总人类行为后生成）
+    """
     operation_id: str
-    agent_id: str                    # 调用人类的 Agent ID
-    action_type: HumanActionType     # 操作类型
-    description: str                 # 操作描述
-    request_params: Dict[str, Any]   # 请求参数
-    status: HumanOperationStatus     # 状态
-    
-    # 执行信息
-    human_input: Optional[str] = None  # 人类输入
-    execution_result: Optional[str] = None  # 执行结果
-    
-    # 总结信息（Agent需要记录）
-    summary: Optional[str] = None       # 操作总结
-    key_findings: List[str] = field(default_factory=list)  # 关键发现
-    
-    # 时间戳
-    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
-    started_at: Optional[str] = None
-    completed_at: Optional[str] = None
-    
-    # 元数据
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    action_type: HumanActionType
+    request_content: str
+    status: HumanActionStatus = HumanActionStatus.PENDING
+    created_at: datetime = field(default_factory=datetime.now)
+    completed_at: Optional[datetime] = None
+    result: Optional[str] = None
+    summary: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
-        return asdict(self)
-
-
-class HumanCallbackManager:
-    """
-    人类回调管理器
-    用于处理桌面操作和浏览器操作的结果总结
-    （用户会提供具体的总结组件，这里留好接口）
-    """
+        """转换为字典"""
+        return {
+            "operation_id": self.operation_id,
+            "action_type": self.action_type.value,
+            "request_content": self.request_content,
+            "status": self.status.value,
+            "created_at": self.created_at.isoformat(),
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "result": self.result,
+            "summary": self.summary
+        }
     
-    def __init__(self):
-        self._desktop_summarizer: Optional[Callable] = None
-        self._browser_summarizer: Optional[Callable] = None
-    
-    def set_desktop_summarizer(self, callback: Callable[[Dict[str, Any]], str]):
-        """
-        设置桌面操作总结回调
-        
-        Args:
-            callback: 接收桌面操作结果，返回总结文本
-        """
-        self._desktop_summarizer = callback
-    
-    def set_browser_summarizer(self, callback: Callable[[Dict[str, Any]], str]):
-        """
-        设置浏览器操作总结回调
-        
-        Args:
-            callback: 接收浏览器操作结果，返回总结文本
-        """
-        self._browser_summarizer = callback
-    
-    async def summarize_desktop_action(self, action_result: Dict[str, Any]) -> str:
-        """
-        总结桌面操作结果
-        
-        Args:
-            action_result: 桌面操作结果
-        
-        Returns:
-            str: 总结文本
-        """
-        if self._desktop_summarizer:
-            return self._desktop_summarizer(action_result)
-        
-        # 默认总结逻辑
-        summary = "桌面操作执行完成"
-        if "screenshot" in action_result:
-            summary += f"，已截取屏幕截图"
-        if "clicked_element" in action_result:
-            summary += f"，点击了元素: {action_result['clicked_element']}"
-        if "window_focus" in action_result:
-            summary += f"，切换窗口焦点"
-        
-        return summary
-    
-    async def summarize_browser_action(self, action_result: Dict[str, Any]) -> str:
-        """
-        总结浏览器操作结果
-        
-        Args:
-            action_result: 浏览器操作结果
-        
-        Returns:
-            str: 总结文本
-        """
-        if self._browser_summarizer:
-            return self._browser_summarizer(action_result)
-        
-        # 默认总结逻辑
-        summary = "浏览器操作执行完成"
-        if "url" in action_result:
-            summary += f"，访问了: {action_result['url']}"
-        if "page_title" in action_result:
-            summary += f"，页面标题: {action_result['page_title']}"
-        if "clicked_element" in action_result:
-            summary += f"，点击了: {action_result['clicked_element']}"
-        if "extracted_content" in action_result:
-            summary += f"，提取了内容"
-        
-        return summary
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'HumanOperation':
+        """从字典创建"""
+        return cls(
+            operation_id=data["operation_id"],
+            action_type=HumanActionType(data["action_type"]),
+            request_content=data["request_content"],
+            status=HumanActionStatus(data["status"]),
+            created_at=datetime.fromisoformat(data["created_at"]),
+            completed_at=datetime.fromisoformat(data["completed_at"]) if data.get("completed_at") else None,
+            result=data.get("result"),
+            summary=data.get("summary")
+        )
 
 
 class HumanInTheLoopManager:
     """
     人在回路管理器
-    核心设计：把人类当作一个强大的工具，支持多种操作模式
+    
+    负责：
+    - 管理所有待处理的人类操作
+    - 处理操作的创建、更新、查询
+    - 维护操作历史
     """
     
     def __init__(self):
+        """初始化管理器"""
         self._operations: Dict[str, HumanOperation] = {}
-        self._operation_queue: List[str] = []  # 待处理的操作队列
-        self._lock = asyncio.Lock()
-        
-        # WebSocket 连接用于通知前端
-        self._websocket = None
-        
-        # 回调管理器
-        self._callback_manager = HumanCallbackManager()
-        
-        # 操作历史（用于记忆）
-        self._operation_history: List[HumanOperation] = []
-        self._max_history = 100
+        self._locks: Dict[str, asyncio.Lock] = {}
+        self._config = get_settings().human_loop
+        logger.info("HumanInTheLoopManager initialized")
     
-    def set_websocket(self, websocket):
-        """设置 WebSocket 连接"""
-        self._websocket = websocket
+    def _get_lock(self, operation_id: str) -> asyncio.Lock:
+        """获取操作锁（每个操作独立锁）"""
+        if operation_id not in self._locks:
+            self._locks[operation_id] = asyncio.Lock()
+        return self._locks[operation_id]
     
-    def get_callback_manager(self) -> HumanCallbackManager:
-        """获取回调管理器"""
-        return self._callback_manager
-    
-    async def invoke_human(
+    async def create_operation(
         self,
-        agent_id: str,
         action_type: HumanActionType,
-        description: str,
-        request_params: Dict[str, Any],
-        timeout: float = 300.0,
-        metadata: Optional[Dict[str, Any]] = None
+        request_content: str,
+        timeout: Optional[int] = None
     ) -> HumanOperation:
         """
-        调用人类（就像调用工具一样）
+        创建新的人类操作请求
         
         Args:
-            agent_id: 调用人类的 Agent ID
             action_type: 操作类型
-            description: 操作描述
-            request_params: 请求参数
-            timeout: 超时时间
-            metadata: 元数据
+            request_content: 请求内容
+            timeout: 超时时间（秒），使用配置默认值
         
         Returns:
-            HumanOperation: 操作记录
+            创建的操作对象
         """
-        operation_id = str(uuid4())[:12]
+        timeout = timeout or self._config.default_timeout
         
         operation = HumanOperation(
-            operation_id=operation_id,
-            agent_id=agent_id,
+            operation_id=f"{self._config.operation_id_prefix}{uuid.uuid4().hex[:8]}",
             action_type=action_type,
-            description=description,
-            request_params=request_params,
-            status=HumanOperationStatus.PENDING,
-            metadata=metadata or {}
+            request_content=request_content
         )
         
-        async with self._lock:
-            self._operations[operation_id] = operation
-            self._operation_queue.append(operation_id)
+        async with self._get_lock(operation.operation_id):
+            self._operations[operation.operation_id] = operation
         
-        # 通过 WebSocket 通知前端
-        await self._notify_human(operation)
+        logger.info(
+            f"Human operation created: {operation.operation_id} "
+            f"(type={action_type.value}, timeout={timeout}s)"
+        )
         
-        logger.info(f"Human invoked [ID: {operation_id}]: {description}")
+        # 启动超时监控任务
+        asyncio.create_task(self._monitor_timeout(operation.operation_id, timeout))
         
         return operation
     
-    async def _notify_human(self, operation: HumanOperation):
-        """通知人类有新的请求"""
-        if self._websocket:
-            try:
-                await self._websocket.send_json({
-                    "type": "human_invocation",
-                    "operation_id": operation.operation_id,
-                    "action_type": operation.action_type.value,
-                    "description": operation.description,
-                    "request_params": operation.request_params,
-                    "context": {
-                        "agent_id": operation.agent_id,
-                        "created_at": operation.created_at
-                    }
-                })
-            except Exception as e:
-                logger.error(f"Failed to notify human: {e}")
-    
-    async def submit_human_input(
-        self,
-        operation_id: str,
-        human_input: str,
-        action_type: HumanActionType = HumanActionType.FEEDBACK
-    ) -> bool:
-        """
-        提交人类输入
-        
-        Args:
-            operation_id: 操作 ID
-            human_input: 人类输入
-            action_type: 操作类型
-        
-        Returns:
-            bool: 是否成功
-        """
-        async with self._lock:
-            if operation_id not in self._operations:
-                return False
-            
-            operation = self._operations[operation_id]
-            operation.human_input = human_input
-            operation.status = HumanOperationStatus.IN_PROGRESS
-            operation.started_at = datetime.now().isoformat()
-        
-        logger.info(f"Human input received [ID: {operation_id}]: {human_input[:100]}")
-        
-        return True
+    async def start_operation(self, operation_id: str) -> HumanOperation:
+        """标记操作开始执行"""
+        async with self._get_lock(operation_id):
+            operation = self._get_operation(operation_id)
+            if operation.status != HumanActionStatus.PENDING:
+                raise HumanOperationStatusError(
+                    f"Operation {operation_id} is not pending (current: {operation.status.value})"
+                )
+            operation.status = HumanActionStatus.IN_PROGRESS
+            logger.info(f"Human operation started: {operation_id}")
+            return operation
     
     async def complete_operation(
         self,
         operation_id: str,
-        execution_result: Optional[str] = None,
-        summary: Optional[str] = None,
-        key_findings: Optional[List[str]] = None
-    ) -> bool:
+        result: str,
+        summary: Optional[str] = None
+    ) -> HumanOperation:
         """
-        完成操作（人类操作完成后调用）
+        完成操作
         
         Args:
-            operation_id: 操作 ID
-            execution_result: 执行结果
-            summary: 总结
-            key_findings: 关键发现
-        
-        Returns:
-            bool: 是否成功
+            operation_id: 操作ID
+            result: 操作结果
+            summary: 操作总结（Agent生成的摘要）
         """
-        async with self._lock:
-            if operation_id not in self._operations:
-                return False
+        async with self._get_lock(operation_id):
+            operation = self._get_operation(operation_id)
+            operation.status = HumanActionStatus.COMPLETED
+            operation.completed_at = datetime.now()
+            operation.result = result
+            operation.summary = summary or f"Human performed {operation.action_type.value} operation"
             
-            operation = self._operations[operation_id]
-            operation.execution_result = execution_result
-            operation.summary = summary
-            operation.key_findings = key_findings or []
-            operation.status = HumanOperationStatus.COMPLETED
-            operation.completed_at = datetime.now().isoformat()
-            
-            # 移出队列
-            if operation_id in self._operation_queue:
-                self._operation_queue.remove(operation_id)
-            
-            # 添加到历史
-            self._operation_history.append(operation)
-            if len(self._operation_history) > self._max_history:
-                self._operation_history = self._operation_history[-self._max_history:]
-        
-        logger.info(f"Operation completed [ID: {operation_id}]: {summary or 'Done'}")
-        
-        return True
+            logger.info(f"Human operation completed: {operation_id}")
+            return operation
     
-    async def get_operation_result(
-        self,
-        operation_id: str,
-        timeout: float = 300.0
-    ) -> Optional[HumanOperation]:
-        """
-        获取操作结果（等待完成）
-        
-        Args:
-            operation_id: 操作 ID
-            timeout: 超时时间
-        
-        Returns:
-            HumanOperation: 操作记录，None 表示超时
-        """
-        start_time = datetime.now()
-        
-        while (datetime.now() - start_time).total_seconds() < timeout:
-            async with self._lock:
-                operation = self._operations.get(operation_id)
-                if operation and operation.status == HumanOperationStatus.COMPLETED:
-                    return operation
+    async def fail_operation(self, operation_id: str, error: str) -> HumanOperation:
+        """标记操作失败"""
+        async with self._get_lock(operation_id):
+            operation = self._get_operation(operation_id)
+            operation.status = HumanActionStatus.FAILED
+            operation.completed_at = datetime.now()
+            operation.result = error
             
-            await asyncio.sleep(0.5)
-        
-        logger.warning(f"Operation timeout [ID: {operation_id}]")
-        return None
+            logger.warning(f"Human operation failed: {operation_id} - {error}")
+            return operation
     
-    def get_operation(self, operation_id: str) -> Optional[HumanOperation]:
-        """获取操作记录"""
+    async def cancel_operation(self, operation_id: str) -> HumanOperation:
+        """取消操作"""
+        async with self._get_lock(operation_id):
+            operation = self._get_operation(operation_id)
+            operation.status = HumanActionStatus.CANCELLED
+            operation.completed_at = datetime.now()
+            
+            logger.info(f"Human operation cancelled: {operation_id}")
+            return operation
+    
+    async def get_operation(self, operation_id: str) -> Optional[HumanOperation]:
+        """获取操作信息（非异步锁版本，用于查询）"""
         return self._operations.get(operation_id)
     
-    async def get_pending_operations(self) -> List[HumanOperation]:
-        """获取待处理的操作"""
-        async with self._lock:
-            return [
-                self._operations[op_id]
-                for op_id in self._operation_queue
-                if op_id in self._operations
-            ]
-    
-    def get_operation_history(
-        self,
-        agent_id: Optional[str] = None,
-        action_type: Optional[HumanActionType] = None,
-        limit: int = 20
-    ) -> List[HumanOperation]:
+    async def check_result(self, operation_id: str) -> Dict[str, Any]:
         """
-        获取操作历史
-        
-        Args:
-            agent_id: 按 Agent 过滤
-            action_type: 按操作类型过滤
-            limit: 返回数量
+        检查操作结果
         
         Returns:
-            List[HumanOperation]: 操作历史
+            操作状态和结果
         """
-        history = self._operation_history
+        operation = self._get_operation(operation_id)
         
-        if agent_id:
-            history = [op for op in history if op.agent_id == agent_id]
-        
-        if action_type:
-            history = [op for op in history if op.action_type == action_type]
-        
-        return history[-limit:]
+        return {
+            "operation_id": operation.operation_id,
+            "status": operation.status.value,
+            "action_type": operation.action_type.value,
+            "request_content": operation.request_content,
+            "result": operation.result,
+            "summary": operation.summary,
+            "created_at": operation.created_at.isoformat(),
+            "completed_at": operation.completed_at.isoformat() if operation.completed_at else None
+        }
     
-    def summarize_human_actions(
-        self,
-        agent_id: Optional[str] = None,
-        since_minutes: Optional[int] = None
-    ) -> str:
-        """
-        总结人类的操作（供 Agent 参考）
-        
-        Args:
-            agent_id: 指定 Agent 的操作
-            since_minutes: 最近多少分钟
-        
-        Returns:
-            str: 总结文本
-        """
-        history = self.get_operation_history(agent_id=agent_id)
-        
-        if not history:
-            return "近期无人类操作记录"
-        
-        # 按时间分组
-        summary_lines = ["## 近期人类操作总结\n"]
-        
-        for op in reversed(history):
-            status_icon = "✅" if op.status == HumanOperationStatus.COMPLETED else "⏳"
-            summary_lines.append(
-                f"{status_icon} [{op.action_type.value}] {op.description}"
-            )
-            if op.summary:
-                summary_lines.append(f"   总结: {op.summary}")
-            if op.key_findings:
-                for finding in op.key_findings[:3]:
-                    summary_lines.append(f"   发现: {finding}")
-            summary_lines.append("")
-        
-        return "\n".join(summary_lines)
+    def _get_operation(self, operation_id: str) -> HumanOperation:
+        """获取操作，不存在则抛出异常"""
+        if operation_id not in self._operations:
+            raise HumanOperationNotFoundError(f"Operation {operation_id} not found")
+        return self._operations[operation_id]
     
-    async def cancel_operation(self, operation_id: str) -> bool:
-        """取消操作"""
-        async with self._lock:
-            if operation_id not in self._operations:
-                return False
-            
-            operation = self._operations[operation_id]
-            operation.status = HumanOperationStatus.CANCELLED
-            operation.completed_at = datetime.now().isoformat()
-            
-            if operation_id in self._operation_queue:
-                self._operation_queue.remove(operation_id)
-        
-        return True
-    
-    def is_main_agent(self) -> bool:
-        """此工具仅主 Agent 可用"""
-        return True
-
-
-class HumanTool(BaseTool):
-    """
-    人类工具
-    把人类当作一个强大的工具，支持多种操作模式：
-    - 提出意见/建议
-    - 执行bash命令
-    - 执行桌面操作
-    - 执行浏览器操作
-    - 审查代码/内容
-    - 批准操作
-    """
-    
-    name = "human"
-    description = """Invoke human assistance as a powerful tool.
-Use this tool when you need:
-- Human feedback or suggestions on your approach
-- Human to execute bash commands manually
-- Human to perform desktop operations (click, type, etc.)
-- Human to perform browser operations (navigate, click, extract)
-- Human to review code or content you created
-- Human to approve critical operations
-
-The human is a powerful collaborator who can:
-- Provide expert feedback on your work
-- Execute complex bash commands you can't
-- Perform GUI operations you can't automate
-- Browse websites and extract information
-- Review and approve your code before production
-
-After human completes their action, summarize what they did and continue your work.
-The human's input will be remembered for context."""
-    
-    parameters = {
-        "type": "object",
-        "properties": {
-            "action": {
-                "type": "string",
-                "enum": [
-                    "invoke",           # 调用人类
-                    "check_result",     # 检查结果
-                    "get_summary",      # 获取总结
-                    "list_pending",     # 列出待处理
-                    "cancel"            # 取消
-                ],
-                "description": "Operation type"
-            },
-            "action_type": {
-                "type": "string",
-                "enum": [
-                    "feedback",     # 提出意见
-                    "bash",         # 执行bash
-                    "desktop",      # 桌面操作
-                    "browser",      # 浏览器操作
-                    "review",       # 审查
-                    "approve"       # 批准
-                ],
-                "description": "Type of human action needed"
-            },
-            "description": {
-                "type": "string",
-                "description": "Description of what you need the human to do"
-            },
-            "details": {
-                "type": "object",
-                "description": "Detailed parameters for the human action"
-            },
-            "operation_id": {
-                "type": "string",
-                "description": "Operation ID (for check_result/cancel actions)"
-            },
-            "timeout": {
-                "type": "integer",
-                "description": "Timeout in seconds",
-                "default": 300
-            },
-            "context": {
-                "type": "object",
-                "description": "Additional context for the human"
-            }
-        },
-        "required": ["action"]
-    }
-    
-    def __init__(
-        self,
-        environment,
-        human_manager: HumanInTheLoopManager,
-        is_main_agent: bool = False,
-        agent_id: str = "main_agent"
-    ):
-        super().__init__(environment)
-        self.human_manager = human_manager
-        self._is_main_agent = is_main_agent
-        self._agent_id = agent_id
-        
-        # 如果不是主 Agent，禁用工具
-        if not self._is_main_agent:
-            self._enabled = False
-    
-    async def execute(
-        self,
-        action: str,
-        action_type: str = "feedback",
-        description: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None,
-        operation_id: Optional[str] = None,
-        timeout: int = 300,
-        context: Optional[Dict[str, Any]] = None
-    ) -> "ToolResult":
-        """执行人类工具调用"""
+    async def _monitor_timeout(self, operation_id: str, timeout: int):
+        """监控操作超时"""
         try:
-            from tools.base import ToolResult
+            await asyncio.sleep(timeout)
             
-            if action == "invoke":
-                if not self._is_main_agent:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="human tool is only available to main agent"
-                    )
-                
-                if not description:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="description is required for invoke action"
-                    )
-                
-                # 转换 action_type
-                type_map = {
-                    "feedback": HumanActionType.FEEDBACK,
-                    "bash": HumanActionType.BASH,
-                    "desktop": HumanActionType.DESKTOP,
-                    "browser": HumanActionType.BROWSER,
-                    "review": HumanActionType.REVIEW,
-                    "approve": HumanActionType.APPROVE
-                }
-                human_type = type_map.get(action_type, HumanActionType.FEEDBACK)
-                
-                # 构建请求参数
-                request_params = details or {}
-                request_params["description"] = description
-                if context:
-                    request_params["context"] = context
-                
-                # 调用人类
-                operation = await self.human_manager.invoke_human(
-                    agent_id=self._agent_id,
-                    action_type=human_type,
-                    description=description,
-                    request_params=request_params,
-                    timeout=timeout,
-                    metadata=context
-                )
-                
-                # 根据操作类型给出不同提示
-                type_hint = {
-                    HumanActionType.FEEDBACK: "人类将提供意见/建议",
-                    HumanActionType.BASH: "人类将手动执行bash命令",
-                    HumanActionType.DESKTOP: "人类将执行桌面操作",
-                    HumanActionType.BROWSER: "人类将执行浏览器操作",
-                    HumanActionType.REVIEW: "人类将审查代码/内容",
-                    HumanActionType.APPROVE: "人类将批准操作"
-                }
-                
-                return ToolResult(
-                    success=True,
-                    content=f"🧑 人类工具已调用 [ID: {operation.operation_id}]\n"
-                            f"类型: {type_hint.get(human_type, '协助')}\n"
-                            f"描述: {description}\n\n"
-                            f"✅ 人类完成操作后，请使用 'check_result' 检查结果，\n"
-                            f"然后总结人类的行为，继续你的工作。"
-                )
-            
-            elif action == "check_result":
-                if not operation_id:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="operation_id is required for check_result action"
-                    )
-                
-                operation = self.human_manager.get_operation(operation_id)
-                
-                if not operation:
-                    return ToolResult(
-                        success=True,
-                        content=f"未找到操作: {operation_id}"
-                    )
-                
-                if operation.status.value == "pending":
-                    return ToolResult(
-                        success=True,
-                        content=f"⏳ 等待人类响应 [ID: {operation_id}]\n"
-                                f"类型: {operation.action_type.value}\n"
-                                f"描述: {operation.description}"
-                    )
-                
-                elif operation.status.value == "in_progress":
-                    return ToolResult(
-                        success=True,
-                        content=f"🔄 人类正在操作中 [ID: {operation_id}]\n"
-                                f"输入: {operation.human_input or '处理中...'}"
-                    )
-                
-                elif operation.status.value == "completed":
-                    # 生成总结提示
-                    summary_prompt = ""
-                    if operation.summary:
-                        summary_prompt = f"\n\n人类总结: {operation.summary}"
+            async with self._get_lock(operation_id):
+                operation = self._get_operation(operation_id)
+                if operation.status in [HumanActionStatus.PENDING, HumanActionStatus.IN_PROGRESS]:
+                    operation.status = HumanActionStatus.TIMEOUT
+                    operation.completed_at = datetime.now()
+                    operation.result = f"Operation timed out after {timeout} seconds"
+                    logger.warning(f"Human operation timed out: {operation_id}")
                     
-                    if operation.key_findings:
-                        summary_prompt += f"\n关键发现:\n" + "\n".join(
-                            f"- {f}" for f in operation.key_findings
-                        )
-                    
-                    return ToolResult(
-                        success=True,
-                        content=f"✅ 人类操作完成 [ID: {operation_id}]\n\n"
-                                f"类型: {operation.action_type.value}\n"
-                                f"描述: {operation.description}\n"
-                                f"人类输入: {operation.human_input or 'N/A'}\n"
-                                f"执行结果: {operation.execution_result or 'N/A'}"
-                                f"{summary_prompt}\n\n"
-                                f"💡 请总结人类的行为，将总结添加到上下文，然后继续你的工作。"
-                    )
-                
-                elif operation.status.value == "cancelled":
-                    return ToolResult(
-                        success=True,
-                        content=f"❌ 操作已取消 [ID: {operation_id}]"
-                    )
-            
-            elif action == "get_summary":
-                # 获取最近的总结
-                history = self.human_manager.get_operation_history(
-                    agent_id=self._agent_id if self._is_main_agent else None,
-                    limit=10
-                )
-                
-                if not history:
-                    return ToolResult(
-                        success=True,
-                        content="近期无人类操作记录"
-                    )
-                
-                summary = self.human_manager.summarize_human_actions(
-                    agent_id=self._agent_id if self._is_main_agent else None
-                )
-                
-                return ToolResult(
-                    success=True,
-                    content=summary
-                )
-            
-            elif action == "list_pending":
-                pending = self.human_manager.get_pending_operations()
-                
-                if not pending:
-                    return ToolResult(
-                        success=True,
-                        content="✅ 无待处理的人类操作"
-                    )
-                
-                content = f"⏳ 待处理的人类操作 ({len(pending)}):\n\n"
-                for op in pending:
-                    content += f"[{op.operation_id}] {op.description}\n"
-                    content += f"   类型: {op.action_type.value}\n"
-                    content += f"   创建时间: {op.created_at}\n\n"
-                
-                return ToolResult(success=True, content=content)
-            
-            elif action == "cancel":
-                if not operation_id:
-                    return ToolResult(
-                        success=False,
-                        content="",
-                        error="operation_id is required for cancel action"
-                    )
-                
-                success = await self.human_manager.cancel_operation(operation_id)
-                
-                if success:
-                    return ToolResult(
-                        success=True,
-                        content=f"✅ 操作已取消: {operation_id}"
-                    )
-                else:
-                    return ToolResult(
-                        success=True,
-                        content=f"❌ 操作不存在或已完成: {operation_id}"
-                    )
-            
-            else:
-                return ToolResult(
-                    success=False,
-                    content="",
-                    error=f"Unknown action: {action}"
-                )
-        
+        except asyncio.CancelledError:
+            # 操作已完成，取消超时监控
+            pass
         except Exception as e:
-            logger.exception(f"HumanTool error: {e}")
-            return ToolResult(
-                success=False,
-                content="",
-                error=str(e)
-            )
+            logger.error(f"Error in timeout monitor for {operation_id}: {e}")
     
-    @property
-    def enabled(self) -> bool:
-        """工具是否启用"""
-        return self._enabled and self._is_main_agent
+    async def cleanup_completed(self, max_age_hours: int = 24):
+        """清理已完成的历史操作"""
+        now = datetime.now()
+        to_remove = []
+        
+        for op_id, operation in self._operations.items():
+            if operation.completed_at:
+                age = (now - operation.completed_at).total_seconds() / 3600
+                if age > max_age_hours:
+                    to_remove.append(op_id)
+        
+        for op_id in to_remove:
+            del self._operations[op_id]
+            if op_id in self._locks:
+                del self._locks[op_id]
+        
+        logger.info(f"Cleaned up {len(to_remove)} completed operations")
+    
+    def get_pending_operations(self) -> list:
+        """获取所有待处理的操作"""
+        return [
+            op.to_dict() 
+            for op in self._operations.values() 
+            if op.status in [HumanActionStatus.PENDING, HumanActionStatus.IN_PROGRESS]
+        ]
 
 
-# ============ 桌面和浏览器操作总结组件占位符 ============
-
+# ========== 抽象汇总组件（用户可自定义实现）==========
 class DesktopActionSummarizer:
     """
-    桌面操作总结组件
-    用户需要实现这个类来总结桌面操作
+    桌面操作汇总器（抽象基类）
+    
+    用户可继承此类实现桌面操作的汇总逻辑。
+    Agent 会在人类完成桌面操作后调用此类来生成操作摘要。
     """
     
-    def __init__(self, manager: HumanCallbackManager):
+    async def summarize(self, action_type: str, action_details: Dict[str, Any]) -> str:
         """
-        Args:
-            manager: HumanCallbackManager 实例
-        """
-        # 注册到回调管理器
-        manager.set_desktop_summarizer(self.summarize)
-    
-    async def summarize(self, action_result: Dict[str, Any]) -> str:
-        """
-        总结桌面操作结果
-        
-        用户需要实现此方法，根据实际需求返回总结文本
+        汇总桌面操作
         
         Args:
-            action_result: 桌面操作结果，可能包含:
-                - screenshot: 截图路径
-                - clicked_element: 点击的元素
-                - typed_text: 输入的文本
-                - window_focus: 窗口焦点变化
-                - opened_application: 打开的应用程序
-                - file_operations: 文件操作列表
-                - error: 错误信息
+            action_type: 操作类型
+            action_details: 操作详情
         
         Returns:
-            str: 操作总结
+            操作摘要文本
         """
-        # TODO: 用户实现具体总结逻辑
-        # 示例实现:
-        summary_parts = []
-        
-        if "clicked_element" in action_result:
-            summary_parts.append(f"点击了元素: {action_result['clicked_element']}")
-        
-        if "typed_text" in action_result:
-            summary_parts.append(f"输入了文本")
-        
-        if "screenshot" in action_result:
-            summary_parts.append("已截取屏幕截图")
-        
-        if "opened_application" in action_result:
-            summary_parts.append(f"打开了应用: {action_result['opened_application']}")
-        
-        if "file_operations" in action_result:
-            ops = action_result["file_operations"]
-            summary_parts.append(f"执行了 {len(ops)} 个文件操作")
-        
-        if not summary_parts:
-            return "桌面操作执行完成"
-        
-        return "，".join(summary_parts)
+        raise NotImplementedError("Subclasses must implement summarize()")
 
 
 class BrowserActionSummarizer:
     """
-    浏览器操作总结组件
-    用户需要实现这个类来总结浏览器操作
+    浏览器操作汇总器（抽象基类）
+    
+    用户可继承此类实现浏览器操作的汇总逻辑。
+    Agent 会在人类完成浏览器操作后调用此类来生成操作摘要。
     """
     
-    def __init__(self, manager: HumanCallbackManager):
+    async def summarize(self, url: str, actions_performed: list, screenshots: Optional[list] = None) -> str:
         """
-        Args:
-            manager: HumanCallbackManager 实例
-        """
-        # 注册到回调管理器
-        manager.set_browser_summarizer(self.summarize)
-    
-    async def summarize(self, action_result: Dict[str, Any]) -> str:
-        """
-        总结浏览器操作结果
-        
-        用户需要实现此方法，根据实际需求返回总结文本
+        汇总浏览器操作
         
         Args:
-            action_result: 浏览器操作结果，可能包含:
-                - url: 访问的URL
-                - page_title: 页面标题
-                - clicked_element: 点击的元素
-                - filled_form: 表单填写
-                - extracted_content: 提取的内容
-                - screenshot: 截图路径
-                - console_logs: 控制台日志
-                - network_requests: 网络请求
+            url: 访问的URL
+            actions_performed: 执行的浏览器操作列表
+            screenshots: 截图列表（可选）
         
         Returns:
-            str: 操作总结
+            操作摘要文本
         """
-        # TODO: 用户实现具体总结逻辑
-        # 示例实现:
-        summary_parts = []
+        raise NotImplementedError("Subclasses must implement summarize()")
+
+
+class HumanTool(BaseTool):
+    """
+    人在回路工具 - Agent调用人类的接口
+    
+    Agent 可以通过此工具请求人类介入：
+    1. 执行bash操作
+    2. 执行桌面操作
+    3. 执行浏览器操作
+    4. 获取人类反馈
+    
+    使用方式：
+    - invoke: 创建新的操作请求
+    - check_result: 检查操作结果
+    - cancel: 取消操作
+    """
+    
+    def __init__(
+        self,
+        operation_manager: Optional[HumanInTheLoopManager] = None,
+        desktop_summarizer: Optional[DesktopActionSummarizer] = None,
+        browser_summarizer: Optional[BrowserActionSummarizer] = None
+    ):
+        """
+        初始化人在回路工具
         
-        if "url" in action_result:
-            summary_parts.append(f"访问了: {action_result['url']}")
+        Args:
+            operation_manager: 操作管理器（可选，懒加载）
+            desktop_summarizer: 桌面操作汇总器
+            browser_summarizer: 浏览器操作汇总器
+        """
+        super().__init__()
+        self._manager = operation_manager
+        self._desktop_summarizer = desktop_summarizer
+        self._browser_summarizer = browser_summarizer
+        self._config = get_settings().human_loop
+    
+    @property
+    def manager(self) -> HumanInTheLoopManager:
+        """懒加载获取管理器"""
+        if self._manager is None:
+            self._manager = HumanInTheLoopManager()
+        return self._manager
+    
+    @property
+    def name(self) -> str:
+        return "human_in_the_loop"
+    
+    @property
+    def description(self) -> str:
+        return (
+            "人在回路工具：Agent可以请求人类介入执行复杂操作。\n"
+            "支持操作类型：\n"
+            "  - bash: 请人类执行bash命令操作\n"
+            "  - desktop: 请人类执行桌面操作\n"
+            "  - browser: 请人类执行浏览器操作\n"
+            "  - feedback: 请人类提供反馈或建议\n\n"
+            "使用方式：\n"
+            "1. invoke: 创建操作请求，等待人类完成\n"
+            "2. check_result: 检查操作结果\n"
+            "3. cancel: 取消待处理的请求"
+        )
+    
+    @property
+    def parameters(self) -> list[Parameter]:
+        return [
+            Parameter(
+                name="action",
+                type=ParameterType.STRING,
+                description="操作类型: invoke(创建请求) | check_result(检查结果) | cancel(取消)",
+                required=True,
+                enum=["invoke", "check_result", "cancel"]
+            ),
+            Parameter(
+                name="action_type",
+                type=ParameterType.STRING,
+                description="操作类型 (仅invoke需要): bash | desktop | browser | feedback",
+                required=False,
+                enum=["bash", "desktop", "browser", "feedback"]
+            ),
+            Parameter(
+                name="request_content",
+                type=ParameterType.STRING,
+                description="请求内容，描述需要人类做什么 (仅invoke需要)",
+                required=False
+            ),
+            Parameter(
+                name="operation_id",
+                type=ParameterType.STRING,
+                description="操作ID (check_result和cancel需要)",
+                required=False
+            ),
+            Parameter(
+                name="timeout",
+                type=ParameterType.INTEGER,
+                description="超时时间（秒），默认使用配置值",
+                required=False
+            )
+        ]
+    
+    async def execute(self, **kwargs) -> ToolResult:
+        """
+        执行人在回路操作
+        """
+        action = kwargs.get("action", "invoke")
         
-        if "page_title" in action_result:
-            summary_parts.append(f"页面: {action_result['page_title']}")
-        
-        if "clicked_element" in action_result:
-            summary_parts.append(f"点击了: {action_result['clicked_element']}")
-        
-        if "extracted_content" in action_result:
-            content = action_result["extracted_content"]
-            if isinstance(content, str):
-                summary_parts.append(f"提取了文本 ({len(content)} 字符)")
+        try:
+            if action == "invoke":
+                return await self._invoke(
+                    action_type=kwargs.get("action_type", "feedback"),
+                    request_content=kwargs.get("request_content", ""),
+                    timeout=kwargs.get("timeout")
+                )
+            elif action == "check_result":
+                return await self._check_result(kwargs.get("operation_id"))
+            elif action == "cancel":
+                return await self._cancel(kwargs.get("operation_id"))
             else:
-                summary_parts.append(f"提取了内容")
+                return ToolResult(
+                    status=ToolStatus.ERROR,
+                    error=f"Unknown action: {action}"
+                )
+        except HumanOperationNotFoundError as e:
+            return ToolResult(status=ToolStatus.ERROR, error=str(e))
+        except HumanOperationStatusError as e:
+            return ToolResult(status=ToolStatus.ERROR, error=str(e))
+        except Exception as e:
+            logger.error(f"Human tool error: {e}")
+            return ToolResult(status=ToolStatus.ERROR, error=str(e))
+    
+    async def _invoke(
+        self,
+        action_type: str,
+        request_content: str,
+        timeout: Optional[int]
+    ) -> ToolResult:
+        """创建新的操作请求"""
+        if not request_content:
+            return ToolResult(
+                status=ToolStatus.ERROR,
+                error="request_content is required for invoke action"
+            )
         
-        if "screenshot" in action_result:
-            summary_parts.append("已截图")
+        # 验证操作类型
+        try:
+            action_enum = HumanActionType(action_type)
+        except ValueError:
+            return ToolResult(
+                status=ToolStatus.ERROR,
+                error=f"Invalid action_type: {action_type}"
+            )
         
-        if not summary_parts:
-            return "浏览器操作执行完成"
+        # 创建操作
+        operation = await self.manager.create_operation(
+            action_type=action_enum,
+            request_content=request_content,
+            timeout=timeout
+        )
         
-        return "，".join(summary_parts)
-
-
-# 全局实例
-_human_manager: Optional[HumanInTheLoopManager] = None
-_human_tool: Optional[HumanTool] = None
-
-
-def get_human_manager() -> HumanInTheLoopManager:
-    """获取全局人类管理器"""
-    global _human_manager
-    if _human_manager is None:
-        _human_manager = HumanInTheLoopManager()
-    return _human_manager
-
-
-def init_human_loop(
-    knowledge_bus=None,
-    workspace=None,
-    log_service=None
-) -> HumanTool:
-    """
-    初始化人在回路服务
-    
-    Args:
-        knowledge_bus: 知识总线（可选，用于记录人类操作到知识总线）
-        workspace: 工作空间（可选）
-        log_service: 日志服务（可选）
-    
-    Returns:
-        HumanTool: 人类工具实例
-    """
-    global _human_manager, _human_tool
-    
-    # 创建管理器
-    _human_manager = HumanInTheLoopManager()
-    
-    # 可选：设置知识总线（用于记录操作历史）
-    if knowledge_bus is not None:
-        # 未来可以在知识总线中记录人类操作
-        pass
-    
-    # 创建工具实例（仅主Agent可用）
-    _human_tool = HumanTool(
-        environment=None,
-        human_manager=_human_manager,
-        is_main_agent=True,
-        agent_id="main_agent"
-    )
-    
-    logger.info("✅ 人在回路服务已初始化")
-    
-    return _human_tool
-
-
-def get_human_tool() -> HumanTool:
-    """获取全局人类工具实例"""
-    global _human_tool
-    if _human_tool is None:
-        _human_tool = create_human_tool()
-    return _human_tool
-
-
-def create_human_tool(
-    is_main_agent: bool = True,
-    agent_id: str = "main_agent"
-) -> HumanTool:
-    """创建人类工具实例"""
-    global _human_manager
-    if _human_manager is None:
-        _human_manager = HumanInTheLoopManager()
-    
-    return HumanTool(None, _human_manager, is_main_agent, agent_id)
-
-
-def init_human_callbacks() -> HumanCallbackManager:
-    """
-    初始化人类回调（桌面和浏览器总结组件）
-    调用此函数注册用户的总结组件
-    
-    Usage:
-        # 在应用启动时调用
-        init_human_callbacks()
+        # 构建提示信息
+        timeout_display = timeout or self._config.default_timeout
         
-        # 或自定义总结组件
-        manager = get_human_manager().get_callback_manager()
-        manager.set_desktop_summarizer(my_desktop_summary_function)
-        manager.set_browser_summarizer(my_browser_summary_function)
-    """
-    global _human_manager
-    if _human_manager is None:
-        _human_manager = HumanInTheLoopManager()
+        if action_enum == HumanActionType.BASH:
+            prompt = (
+                f"**Agent请求人类执行Bash操作**\n\n"
+                f"**操作ID**: `{operation.operation_id}`\n"
+                f"**超时时间**: {timeout_display}秒\n\n"
+                f"**请求内容**:\n{request_content}\n\n"
+                f"请执行上述bash操作，完成后告诉我结果。"
+            )
+        elif action_enum == HumanActionType.DESKTOP:
+            prompt = (
+                f"**Agent请求人类执行桌面操作**\n\n"
+                f"**操作ID**: `{operation.operation_id}`\n"
+                f"**超时时间**: {timeout_display}秒\n\n"
+                f"**请求内容**:\n{request_content}\n\n"
+                f"请执行上述桌面操作，完成后告诉我你做了什么。"
+            )
+        elif action_enum == HumanActionType.BROWSER:
+            prompt = (
+                f"**Agent请求人类执行浏览器操作**\n\n"
+                f"**操作ID**: `{operation.operation_id}`\n"
+                f"**超时时间**: {timeout_display}秒\n\n"
+                f"**请求内容**:\n{request_content}\n\n"
+                f"请执行上述浏览器操作，完成后告诉我你访问了哪些页面、执行了什么操作。"
+            )
+        else:  # FEEDBACK
+            prompt = (
+                f"**Agent请求人类反馈**\n\n"
+                f"**操作ID**: `{operation.operation_id}`\n"
+                f"**超时时间**: {timeout_display}秒\n\n"
+                f"**请求内容**:\n{request_content}\n\n"
+                f"请提供你的反馈或建议。"
+            )
+        
+        return ToolResult(
+            status=ToolStatus.REQUIRE_INPUT,
+            output=prompt,
+            metadata={
+                "operation_id": operation.operation_id,
+                "action_type": action_type,
+                "timeout": timeout_display,
+                "message": "等待人类响应..."
+            }
+        )
     
-    # 用户可以替换这些实现
-    # DesktopActionSummarizer(_human_manager._callback_manager)
-    # BrowserActionSummarizer(_human_manager._callback_manager)
+    async def _check_result(self, operation_id: str) -> ToolResult:
+        """检查操作结果"""
+        if not operation_id:
+            return ToolResult(
+                status=ToolStatus.ERROR,
+                error="operation_id is required for check_result action"
+            )
+        
+        result = await self.manager.check_result(operation_id)
+        status = result["status"]
+        
+        # 根据状态返回不同结果
+        if status in [HumanActionStatus.PENDING.value, HumanActionStatus.IN_PROGRESS.value]:
+            # 仍在等待
+            return ToolResult(
+                status=ToolStatus.REQUIRE_INPUT,
+                output=f"操作 {operation_id} 仍在进行中，请等待人类完成...",
+                metadata=result
+            )
+        
+        elif status == HumanActionStatus.COMPLETED.value:
+            # 获取总结
+            summary = result.get("summary")
+            
+            if not summary and result.get("result"):
+                # 如果没有预生成的总结，根据操作类型尝试生成
+                action_type = result.get("action_type")
+                summary = await self._generate_summary(
+                    action_type, 
+                    result["request_content"], 
+                    result["result"]
+                )
+            
+            return ToolResult(
+                status=ToolStatus.DONE,
+                output=f"人类已完成操作！\n\n**总结**: {summary}",
+                metadata=result
+            )
+        
+        elif status == HumanActionStatus.TIMEOUT.value:
+            return ToolResult(
+                status=ToolStatus.DONE,
+                output=f"操作 {operation_id} 已超时，人类未能在规定时间内完成。",
+                metadata=result
+            )
+        
+        elif status == HumanActionStatus.CANCELLED.value:
+            return ToolResult(
+                status=ToolStatus.DONE,
+                output=f"操作 {operation_id} 已被取消。",
+                metadata=result
+            )
+        
+        elif status == HumanActionStatus.FAILED.value:
+            return ToolResult(
+                status=ToolStatus.DONE,
+                output=f"操作 {operation_id} 失败：{result.get('result', '未知错误')}",
+                metadata=result
+            )
+        
+        else:
+            return ToolResult(
+                status=ToolStatus.ERROR,
+                error=f"Unknown status: {status}"
+            )
     
-    return _human_manager._callback_manager
+    async def _cancel(self, operation_id: str) -> ToolResult:
+        """取消操作"""
+        if not operation_id:
+            return ToolResult(
+                status=ToolStatus.ERROR,
+                error="operation_id is required for cancel action"
+            )
+        
+        await self.manager.cancel_operation(operation_id)
+        
+        return ToolResult(
+            status=ToolStatus.DONE,
+            output=f"操作 {operation_id} 已取消",
+            metadata={"operation_id": operation_id, "status": "cancelled"}
+        )
+    
+    async def _generate_summary(
+        self,
+        action_type: str,
+        request: str,
+        result: str
+    ) -> str:
+        """根据操作类型生成总结"""
+        if action_type == "bash" and self._desktop_summarizer:
+            try:
+                return await self._desktop_summarizer.summarize("bash", {
+                    "request": request,
+                    "result": result
+                })
+            except NotImplementedError:
+                pass
+        
+        elif action_type == "desktop" and self._desktop_summarizer:
+            try:
+                return await self._desktop_summarizer.summarize("desktop", {
+                    "request": request,
+                    "result": result
+                })
+            except NotImplementedError:
+                pass
+        
+        elif action_type == "browser" and self._browser_summarizer:
+            try:
+                return await self._browser_summarizer.summarize(
+                    url="",
+                    actions_performed=[result],
+                    screenshots=None
+                )
+            except NotImplementedError:
+                pass
+        
+        # 默认总结
+        return f"人类执行了{action_type}操作：{result}"
