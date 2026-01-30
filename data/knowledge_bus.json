@@ -1,0 +1,650 @@
+{
+  "knowledge": [
+    {
+      "id": "ea86c5ee-6057-45c4-b5ca-025ca959c2df",
+      "content": "AgentBus是一个智能协作平台，提供多智能体协作、工具调用、记忆管理和API接口的综合解决方案。",
+      "knowledge_type": "fact",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:24:45.919154",
+      "updated_at": "2026-01-29T12:24:45.919682",
+      "created_by": "test_user",
+      "tags": [
+        "平台特性",
+        "系统介绍"
+      ],
+      "confidence": 1.0,
+      "usage_count": 2,
+      "status": "active",
+      "related_knowledge": [
+        "7653458a-2cb8-47d6-9382-d2ff0fb9587b"
+      ],
+      "metadata": {
+        "category": "介绍",
+        "importance": "high"
+      },
+      "context": {}
+    },
+    {
+      "id": "7653458a-2cb8-47d6-9382-d2ff0fb9587b",
+      "content": "要启动AgentBus服务，请使用命令：python cli.py --reload 或 python cli.py --host 0.0.0.0 --port 8000",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:24:45.919301",
+      "updated_at": "2026-01-29T12:24:45.919787",
+      "created_by": "system",
+      "tags": [
+        "CLI",
+        "命令",
+        "启动"
+      ],
+      "confidence": 0.95,
+      "usage_count": 1,
+      "status": "active",
+      "related_knowledge": [
+        "ea86c5ee-6057-45c4-b5ca-025ca959c2df"
+      ],
+      "metadata": {
+        "category": "操作指南",
+        "target": "用户",
+        "updated": true,
+        "update_time": "2026-01-29T12:24:45.919492"
+      },
+      "context": {}
+    },
+    {
+      "id": "ef44a1f3-0a6b-437f-9abf-b7aa69bebded",
+      "content": "在创建HITL请求时，应该提供清晰的标题和描述，包含必要的上下文信息，以便更好地匹配合适的联系人。",
+      "knowledge_type": "rule",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:24:45.919381",
+      "updated_at": "2026-01-29T12:24:45.919381",
+      "created_by": "expert",
+      "tags": [
+        "请求",
+        "最佳实践",
+        "HITL"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {
+        "category": "最佳实践",
+        "applicability": "HITL"
+      },
+      "context": {}
+    },
+    {
+      "id": "31b4ad97-eb62-4593-9b02-0db1d11a55ec",
+      "content": "AgentBus是一个智能协作平台，提供多智能体协作、工具调用、记忆管理和API接口的综合解决方案。",
+      "knowledge_type": "fact",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:25:05.286473",
+      "updated_at": "2026-01-29T12:25:05.286959",
+      "created_by": "test_user",
+      "tags": [
+        "平台特性",
+        "系统介绍"
+      ],
+      "confidence": 1.0,
+      "usage_count": 2,
+      "status": "active",
+      "related_knowledge": [
+        "1f866471-fa90-4dbb-9d97-baf0f5c81c9d"
+      ],
+      "metadata": {
+        "category": "介绍",
+        "importance": "high"
+      },
+      "context": {}
+    },
+    {
+      "id": "1f866471-fa90-4dbb-9d97-baf0f5c81c9d",
+      "content": "要启动AgentBus服务，请使用命令：python cli.py --reload 或 python cli.py --host 0.0.0.0 --port 8000",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:25:05.286562",
+      "updated_at": "2026-01-29T12:25:05.287048",
+      "created_by": "system",
+      "tags": [
+        "CLI",
+        "命令",
+        "启动"
+      ],
+      "confidence": 0.95,
+      "usage_count": 1,
+      "status": "active",
+      "related_knowledge": [
+        "31b4ad97-eb62-4593-9b02-0db1d11a55ec"
+      ],
+      "metadata": {
+        "category": "操作指南",
+        "target": "用户",
+        "updated": true,
+        "update_time": "2026-01-29T12:25:05.286759"
+      },
+      "context": {}
+    },
+    {
+      "id": "d7fc0d6d-087f-41e4-8449-900cc7318a1a",
+      "content": "在创建HITL请求时，应该提供清晰的标题和描述，包含必要的上下文信息，以便更好地匹配合适的联系人。",
+      "knowledge_type": "rule",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:25:05.286634",
+      "updated_at": "2026-01-29T12:25:05.286634",
+      "created_by": "expert",
+      "tags": [
+        "请求",
+        "最佳实践",
+        "HITL"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {
+        "category": "最佳实践",
+        "applicability": "HITL"
+      },
+      "context": {}
+    },
+    {
+      "id": "752cdd60-5d15-4bce-9ec8-16f612470ee2",
+      "content": "知识总线提供了强大的搜索和索引功能，支持多种查询方式和过滤条件。",
+      "knowledge_type": "fact",
+      "source": "agent_learning",
+      "created_at": "2026-01-29T12:25:05.308310",
+      "updated_at": "2026-01-29T12:25:05.308310",
+      "created_by": "ai_agent",
+      "tags": [
+        "搜索",
+        "索引",
+        "知识总线"
+      ],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "99ff9e93-0077-43a5-84c3-050b203cd831",
+      "content": "HITL（Human-in-the-Loop）是一种重要的AI协作模式，允许AI代理在遇到复杂问题时向人类求助。",
+      "knowledge_type": "context",
+      "source": "user_input",
+      "created_at": "2026-01-29T12:25:05.308375",
+      "updated_at": "2026-01-29T12:25:05.308375",
+      "created_by": "user",
+      "tags": [
+        "HITL",
+        "人工智能",
+        "协作"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "2d798ddf-e451-4cd7-8af5-3431b2241766",
+      "content": "这是一个需要验证的知识项，其准确性需要进一步确认。",
+      "knowledge_type": "metadata",
+      "source": "auto_generated",
+      "created_at": "2026-01-29T12:25:05.308477",
+      "updated_at": "2026-01-29T12:25:05.308665",
+      "created_by": "system",
+      "tags": [
+        "验证中"
+      ],
+      "confidence": 0.5,
+      "usage_count": 0,
+      "status": "inactive",
+      "related_knowledge": [],
+      "metadata": {
+        "validation_required": true,
+        "validation_score": 0.6,
+        "reviewer": "expert",
+        "last_review": "2026-01-29T12:25:05.308633",
+        "approved": false
+      },
+      "context": {}
+    },
+    {
+      "id": "df978e25-3b81-4203-b113-49b1a589be3e",
+      "content": "HITL（人在回路）请求应该包含清晰的上下文信息和具体的任务描述，以便智能匹配最合适的联系人。",
+      "knowledge_type": "rule",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:29:45.275086",
+      "updated_at": "2026-01-29T12:29:45.275086",
+      "created_by": "system",
+      "tags": [
+        "请求创建",
+        "最佳实践",
+        "HITL"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "267c814c-d791-49c1-a32b-5aa93790c118",
+      "content": "当HITL请求包含紧急标记时，系统会优先联系具有高优先级评分的联系人。",
+      "knowledge_type": "fact",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T12:29:45.275173",
+      "updated_at": "2026-01-29T12:29:45.275173",
+      "created_by": "system",
+      "tags": [
+        "HITL",
+        "优先级",
+        "紧急处理"
+      ],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "fb318485-5386-422e-b9ba-725967f5b609",
+      "content": "API依赖注入错误的解决方案：在AgentBus中，HITL API需要正确配置依赖注入系统，确保HITLService、CommunicationMap和KnowledgeBus服务的正确集成。",
+      "knowledge_type": "procedure",
+      "source": "agent_learning",
+      "created_at": "2026-01-29T12:29:45.275583",
+      "updated_at": "2026-01-29T12:29:45.275583",
+      "created_by": "expert_developer",
+      "tags": [
+        "API",
+        "依赖注入",
+        "HITL",
+        "修复"
+      ],
+      "confidence": 0.95,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {
+        "source_request": "20f3b5d6-779a-438c-b3c7-00f364a92aec",
+        "category": "troubleshooting",
+        "verified": true
+      },
+      "context": {}
+    },
+    {
+      "id": "d66cde02-93e8-4576-a3cc-82ac3ba3ee23",
+      "content": "原有知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:24:10.664376",
+      "updated_at": "2026-01-29T13:24:10.664376",
+      "created_by": "test_user",
+      "tags": [
+        "测试",
+        "原有"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "ab975a51-27a7-485b-8d35-f3a37a007b7b",
+      "content": "原有知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:10.934999",
+      "updated_at": "2026-01-29T13:26:10.934999",
+      "created_by": "test_user",
+      "tags": [
+        "测试",
+        "原有"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "7e8181eb-ef3f-4fef-a8cc-04cb0f1bf0e4",
+      "content": "插件化知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:10.974906",
+      "updated_at": "2026-01-29T13:26:10.974906",
+      "created_by": "plugin_test",
+      "tags": [
+        "测试",
+        "插件"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "34d72583-273d-416a-a8d6-f2ae7c624bd3",
+      "content": "支持插件的知识总线测试",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:11.002166",
+      "updated_at": "2026-01-29T13:26:11.002166",
+      "created_by": "plugin_support_test",
+      "tags": [
+        "支持",
+        "插件"
+      ],
+      "confidence": 0.95,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "0e7c6aca-3da1-4220-af34-9d10fa8359a0",
+      "content": "原有知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:30.971110",
+      "updated_at": "2026-01-29T13:26:30.971110",
+      "created_by": "test_user",
+      "tags": [
+        "测试",
+        "原有"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "4c825a46-e444-49f5-a50a-6aa7379318c6",
+      "content": "插件化知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:31.217815",
+      "updated_at": "2026-01-29T13:26:31.217815",
+      "created_by": "plugin_test",
+      "tags": [
+        "测试",
+        "插件"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "606c1be9-076b-4366-a5ae-6ae1439e3e4c",
+      "content": "支持插件的知识总线测试",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:31.262593",
+      "updated_at": "2026-01-29T13:26:31.262593",
+      "created_by": "plugin_support_test",
+      "tags": [
+        "支持",
+        "插件"
+      ],
+      "confidence": 0.95,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "ab7ec9e6-e838-4ab9-874b-7c69a0937435",
+      "content": "兼容性测试1",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:26:31.298481",
+      "updated_at": "2026-01-29T13:26:31.298719",
+      "created_by": "compat_test",
+      "tags": [
+        "测试1",
+        "兼容"
+      ],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "696e1f39-5b05-4a43-af26-8d73bde83fae",
+      "content": "兼容性测试2",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T13:26:31.298561",
+      "updated_at": "2026-01-29T13:26:31.298561",
+      "created_by": "compat_test",
+      "tags": [
+        "测试2",
+        "兼容"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "9dc5a4aa-0fa8-4126-9fb3-05d4f9b6ffaf",
+      "content": "原有知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:09.649017",
+      "updated_at": "2026-01-29T13:27:09.649017",
+      "created_by": "test_user",
+      "tags": [
+        "测试",
+        "原有"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "0d0d726d-d8b4-4030-9037-79c753788a46",
+      "content": "插件化知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:09.676045",
+      "updated_at": "2026-01-29T13:27:09.676045",
+      "created_by": "plugin_test",
+      "tags": [
+        "测试",
+        "插件"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "cf385df9-5012-40e8-a3e5-298ac755390a",
+      "content": "支持插件的知识总线测试",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:09.700549",
+      "updated_at": "2026-01-29T13:27:09.700549",
+      "created_by": "plugin_support_test",
+      "tags": [
+        "支持",
+        "插件"
+      ],
+      "confidence": 0.95,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "e7d3243e-32a9-46c0-aaaf-83bca1c3fbc5",
+      "content": "兼容性测试1",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:09.722598",
+      "updated_at": "2026-01-29T13:27:09.722830",
+      "created_by": "compat_test",
+      "tags": [
+        "测试1",
+        "兼容"
+      ],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "3f789ac8-e475-4bee-937c-1e15a15167ca",
+      "content": "兼容性测试2",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T13:27:09.722670",
+      "updated_at": "2026-01-29T13:27:09.722670",
+      "created_by": "compat_test",
+      "tags": [
+        "测试2",
+        "兼容"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "192b229e-5443-4b8b-9d05-61d7610faf32",
+      "content": "原有知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:35.623017",
+      "updated_at": "2026-01-29T13:27:35.623017",
+      "created_by": "test_user",
+      "tags": [
+        "测试",
+        "原有"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "6165d6b9-c153-47fe-9ea7-7f3393e3b035",
+      "content": "插件化知识总线测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:35.658434",
+      "updated_at": "2026-01-29T13:27:35.658434",
+      "created_by": "plugin_test",
+      "tags": [
+        "测试",
+        "插件"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "f9d6c10a-4d28-47f2-99c0-47eb3957fea2",
+      "content": "支持插件的知识总线测试",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:35.686997",
+      "updated_at": "2026-01-29T13:27:35.686997",
+      "created_by": "plugin_support_test",
+      "tags": [
+        "支持",
+        "插件"
+      ],
+      "confidence": 0.95,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "a8356318-2a68-4fce-a87f-6cdc3e58e17f",
+      "content": "兼容性测试1",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-29T13:27:35.709306",
+      "updated_at": "2026-01-29T13:27:35.709580",
+      "created_by": "compat_test",
+      "tags": [
+        "测试1",
+        "兼容"
+      ],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "22b81998-2907-4c47-bf3c-3111a25cbf85",
+      "content": "兼容性测试2",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-29T13:27:35.709386",
+      "updated_at": "2026-01-29T13:27:35.709386",
+      "created_by": "compat_test",
+      "tags": [
+        "测试2",
+        "兼容"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    }
+  ],
+  "stats": {
+    "total_knowledge": 0,
+    "by_type": {},
+    "by_source": {},
+    "total_usage": 0,
+    "average_confidence": 0.0
+  },
+  "last_updated": "2026-01-29T13:32:16.764777"
+}

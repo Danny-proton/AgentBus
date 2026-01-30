@@ -1,0 +1,171 @@
+---
+name: example_utility_skill
+description: 示例工具技能，展示AgentBus技能系统的基本使用方法
+version: 1.0.0
+author: AgentBus Team
+homepage: https://github.com/agentbus/skills
+license: MIT
+tags: [example, utility, demonstration]
+category: utility
+enabled: true
+auto_activate: true
+priority: 10
+
+# 依赖和前置条件
+requires:
+  python_version: ">=3.8"
+  packages:
+    - requests
+    - pydantic
+
+dependencies: []
+conflicts: []
+
+# 权限要求
+permissions:
+  - network_access
+  - file_read
+
+# 配置架构
+config_schema:
+  api_endpoint:
+    type: string
+    required: true
+    description: API端点地址
+    default: "https://api.example.com"
+  
+  timeout:
+    type: integer
+    required: false
+    description: 请求超时时间（秒）
+    default: 30
+  
+  retries:
+    type: integer
+    required: false
+    description: 重试次数
+    default: 3
+
+# 安装信息
+install_info:
+  pip_packages:
+    - requests>=2.25.0
+    - pydantic>=1.8.0
+  
+  system_requirements:
+    - curl
+    - git
+  
+  environment_setup:
+    - name: EXAMPLE_API_KEY
+      description: API访问密钥
+      required: true
+
+# 技能特定配置
+skill_config:
+  max_concurrent_requests: 10
+  cache_ttl: 300
+  enable_logging: true
+
+---
+
+# 示例工具技能
+
+这是一个展示AgentBus技能系统基本用法的示例技能。
+
+## 功能特性
+
+- 文本处理和转换
+- 网络请求和API调用
+- 数据验证和格式化
+- 文件操作和配置管理
+
+## 使用方法
+
+### 基本命令
+
+```bash
+# 获取帮助信息
+/skill example_utility_skill help
+
+# 查看状态
+/skill example_utility_skill status
+
+# 文本处理
+/skill example_utility_skill process_text --input "hello world" --mode uppercase
+
+# API调用
+/skill example_utility_skill api_call --endpoint "/users" --method GET
+
+# 配置管理
+/skill example_utility_skill config_get --key api_endpoint
+/skill example_utility_skill config_set --key timeout --value 60
+```
+
+### 编程接口
+
+```python
+from agentbus.skills import SkillManager
+
+# 创建技能管理器
+manager = SkillManager(workspace_dir="./workspace", config_dir="./config")
+
+# 执行技能操作
+result = await manager.execute_skill(
+    "example_utility_skill", 
+    "process_text", 
+    {"input": "hello world", "mode": "uppercase"}
+)
+```
+
+## 配置说明
+
+技能需要在配置文件中设置以下参数：
+
+```yaml
+skills:
+  example_utility_skill:
+    api_endpoint: "https://api.example.com"
+    timeout: 30
+    retries: 3
+    api_key: "your-api-key-here"
+```
+
+## 错误处理
+
+技能包含完善的错误处理机制：
+
+- 网络请求失败时的重试机制
+- 参数验证和类型检查
+- 详细的错误日志和状态报告
+
+## 扩展开发
+
+要开发自定义技能，请继承`BaseSkill`类并实现必要的方法：
+
+```python
+from agentbus.skills import BaseSkill, SkillMetadata, SkillContext
+
+class MyCustomSkill(BaseSkill):
+    def __init__(self, metadata: SkillMetadata):
+        super().__init__(metadata)
+    
+    async def initialize(self, context: SkillContext) -> None:
+        # 初始化逻辑
+        pass
+    
+    async def activate(self) -> None:
+        # 激活逻辑
+        pass
+    
+    async def execute(self, action: str, params: dict) -> Any:
+        # 执行逻辑
+        pass
+```
+
+## 注意事项
+
+1. 确保所有依赖包已正确安装
+2. 配置参数必须满足验证规则
+3. 网络请求需要适当的错误处理
+4. 敏感信息应通过环境变量传递

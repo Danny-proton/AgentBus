@@ -1,0 +1,34 @@
+# AgentBus 生产环境配置
+# 针对生产环境优化的配置
+
+[app]
+debug = false
+port = 8000
+
+[logging]
+level = "WARNING"
+format = "json"
+console = false
+file_path = "/var/log/agentbus/production.log"
+rotation_size = "100MB"
+retention_days = 90
+
+[database]
+url = "postgresql://user:password@localhost:5432/agentbus_prod"
+pool_size = 20
+max_overflow = 30
+
+[redis]
+url = "redis://localhost:6379/2"
+password = "prod_redis_password"
+pool_size = 20
+
+[diagnostics]
+enable_metrics = true
+metrics_port = 9090
+enable_tracing = false
+trace_sample_rate = 0.01
+
+[security]
+encrypt_sensitive = true
+token_expire_hours = 12

@@ -1,0 +1,64 @@
+contacts:
+- active: true
+  availability: always
+  contact_methods:
+  - type: email
+    value: admin@company.com
+  - type: phone
+    value: +86-138-0000-0000
+  expertise:
+  - system
+  - infrastructure
+  - troubleshooting
+  id: admin
+  language: zh-CN
+  last_active: null
+  name: 系统管理员
+  priority_score: 1.0
+  response_time_estimate: 15
+  role: administrator
+  tags: []
+  timezone: Asia/Shanghai
+- active: true
+  availability: work_hours
+  contact_methods:
+  - type: email
+    value: tech.lead@company.com
+  - type: slack
+    value: '@tech_lead'
+  expertise:
+  - development
+  - architecture
+  - review
+  - code_quality
+  id: tech_lead
+  language: zh-CN
+  last_active: null
+  name: 技术负责人
+  priority_score: 0.9
+  response_time_estimate: 30
+  role: technical_lead
+  tags: []
+  timezone: Asia/Shanghai
+- active: true
+  availability: work_hours
+  contact_methods:
+  - type: email
+    value: data.science@company.com
+  - type: teams
+    value: data.scientist
+  expertise:
+  - data_analysis
+  - statistics
+  - machine_learning
+  - python
+  id: data_scientist
+  language: zh-CN
+  last_active: null
+  name: 数据科学家
+  priority_score: 0.8
+  response_time_estimate: 45
+  role: data_scientist
+  tags: []
+  timezone: Asia/Shanghai
+last_updated: '2026-01-29T12:25:35.530431'

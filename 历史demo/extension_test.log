@@ -1,0 +1,46 @@
+2026-01-29 15:31:24,959 - extension.registry - INFO - 扩展 Hello World Extension(hello_world) 注册成功
+2026-01-29 15:31:24,959 - extension.registry - INFO - 扩展 Calculator Extension(calculator) 注册成功
+2026-01-29 15:31:24,959 - extension.registry - INFO - 扩展 Hello World Extension(hello_world) 注销成功
+2026-01-29 15:31:24,959 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:31:24,997 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:31:24,997 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:31:25,002 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:32:48,725 - extension.registry - INFO - 扩展 Hello World Extension(hello_world) 注册成功
+2026-01-29 15:32:48,725 - extension.registry - INFO - 扩展 Calculator Extension(calculator) 注册成功
+2026-01-29 15:32:48,725 - extension.registry - INFO - 扩展 Hello World Extension(hello_world) 注销成功
+2026-01-29 15:32:48,725 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:32:48,748 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:32:48,753 - extension.manager - INFO - 扩展管理器初始化完成
+2026-01-29 15:32:48,753 - extension.manager - INFO - 开始加载扩展: Hello World Extension (hello_world)
+2026-01-29 15:32:48,758 - extension.registry - INFO - 扩展 Hello World Extension(hello_world) 注册成功
+2026-01-29 15:32:48,769 - extension.manager - INFO - 扩展加载成功: Hello World Extension
+2026-01-29 15:32:48,770 - extension.manager - INFO - 开始加载扩展: Calculator Extension (calculator)
+2026-01-29 15:32:48,774 - extension.registry - INFO - 扩展 Calculator Extension(calculator) 注册成功
+2026-01-29 15:32:48,786 - extension.manager - INFO - 扩展加载成功: Calculator Extension
+2026-01-29 15:32:48,786 - extension.manager - INFO - 开始加载扩展: Data Processor Extension (data_processor)
+2026-01-29 15:32:48,786 - extension.registry - INFO - 扩展 Data Processor Extension(data_processor) 注册成功
+2026-01-29 15:32:48,791 - extension.manager - INFO - 扩展加载成功: Data Processor Extension
+2026-01-29 15:32:48,791 - extension.manager - INFO - 开始激活扩展: Hello World Extension
+2026-01-29 15:32:48,804 - extension.manager - INFO - 扩展激活成功: Hello World Extension
+2026-01-29 15:32:48,805 - extension.manager - INFO - 开始激活扩展: Calculator Extension
+2026-01-29 15:32:48,818 - extension.manager - INFO - 扩展激活成功: Calculator Extension
+2026-01-29 15:32:48,818 - extension.manager - INFO - 开始激活扩展: Data Processor Extension
+2026-01-29 15:32:48,825 - extension.manager - INFO - 扩展激活成功: Data Processor Extension
+2026-01-29 15:32:48,825 - extension.manager - WARNING - 扩展 hello_world 未激活
+2026-01-29 15:32:48,825 - extension.manager - WARNING - 扩展 calculator 未激活
+2026-01-29 15:32:48,830 - extension.manager - WARNING - 扩展 data_processor 未激活
+2026-01-29 15:32:48,835 - extension.sandbox - INFO - 扩展沙箱初始化完成
+2026-01-29 15:32:48,841 - extension.manager - INFO - 扩展管理器初始化完成
+2026-01-29 15:32:48,846 - extension.manager - INFO - 开始加载扩展: Calculator Extension (calculator)
+2026-01-29 15:32:48,850 - extension.registry - INFO - 扩展 Calculator Extension(calculator) 注册成功
+2026-01-29 15:32:48,862 - extension.manager - INFO - 扩展加载成功: Calculator Extension
+2026-01-29 15:32:48,862 - extension.manager - INFO - 开始加载扩展: Data Processor Extension (data_processor)
+2026-01-29 15:32:48,862 - extension.registry - INFO - 扩展 Data Processor Extension(data_processor) 注册成功
+2026-01-29 15:32:48,874 - extension.manager - INFO - 扩展加载成功: Data Processor Extension
+2026-01-29 15:32:48,874 - extension.manager - INFO - 开始解析扩展依赖
+2026-01-29 15:32:48,874 - extension.manager - INFO - 依赖解析成功
+2026-01-29 15:32:48,879 - extension.manager - INFO - 开始激活扩展: Calculator Extension
+2026-01-29 15:32:48,892 - extension.manager - INFO - 扩展激活成功: Calculator Extension
+2026-01-29 15:32:48,892 - extension.manager - INFO - 开始激活扩展: Data Processor Extension
+2026-01-29 15:32:48,903 - extension.manager - INFO - 扩展激活成功: Data Processor Extension
+2026-01-29 15:32:48,903 - extension.sandbox - INFO - 扩展沙箱初始化完成

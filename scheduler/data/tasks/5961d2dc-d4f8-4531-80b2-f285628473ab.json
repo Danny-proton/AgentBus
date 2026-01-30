@@ -1,0 +1,29 @@
+{
+  "id": "5961d2dc-d4f8-4531-80b2-f285628473ab",
+  "name": "失败任务",
+  "func": "<function test_error_handling.<locals>.failing_task at 0x7f72cd5385e0>",
+  "args": [],
+  "kwargs": {},
+  "status": "pending",
+  "config": {
+    "max_retries": 2,
+    "retry_delay": 60.0,
+    "timeout": null,
+    "dependencies": [],
+    "priority": "TaskPriority.NORMAL",
+    "auto_retry": true,
+    "retry_backoff": 2.0,
+    "description": "",
+    "metadata": {}
+  },
+  "created_at": "2026-01-29T16:38:20.204334",
+  "updated_at": "2026-01-29T16:38:20.204334",
+  "started_at": null,
+  "completed_at": null,
+  "last_error": null,
+  "retry_count": 0,
+  "result": null,
+  "progress": 0.0,
+  "metadata": {},
+  "priority": 2
+}

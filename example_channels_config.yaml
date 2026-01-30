@@ -1,0 +1,96 @@
+version: "1.0"
+export_time: 1634567890.123
+channels:
+  telegram_main:
+    channel_id: telegram_main
+    name: "Main Telegram Channel"
+    type: telegram
+    default_account_id: bot_account
+    accounts:
+      bot_account:
+        account_id: bot_account
+        bot_token: "your_bot_token_here"
+        webhook_url: "https://your-domain.com/webhook"
+        allowed_chats:
+          - "-1001234567890"
+          - "123456789"
+    settings:
+      message_timeout: 30
+      max_message_length: 4096
+      enable_attachments: true
+  
+  discord_community:
+    channel_id: discord_community
+    name: "Community Discord Server"
+    type: discord
+    default_account_id: community_bot
+    accounts:
+      community_bot:
+        account_id: community_bot
+        bot_token: "your_discord_token_here"
+        guild_id: "123456789012345678"
+        command_prefix: "!"
+        mention_role_id: "987654321098765432"
+    settings:
+      enable_commands: true
+      auto_reply: false
+      log_level: "INFO"
+  
+  whatsapp_business:
+    channel_id: whatsapp_business
+    name: "WhatsApp Business Channel"
+    type: whatsapp
+    default_account_id: business_account
+    accounts:
+      business_account:
+        account_id: business_account
+        phone_number_id: "123456789012345"
+        access_token: "your_whatsapp_token_here"
+        verify_token: "your_verify_token_here"
+        webhook_verify_token: "webhook_verify_123"
+    settings:
+      business_hours:
+        start: "09:00"
+        end: "18:00"
+      auto_responses:
+        enabled: true
+        message: "Thanks for your message! We'll get back to you during business hours."
+  
+  slack_workspace:
+    channel_id: slack_workspace
+    name: "Team Slack Workspace"
+    type: slack
+    default_account_id: workspace_bot
+    accounts:
+      workspace_bot:
+        account_id: workspace_bot
+        bot_token: "xoxb-your-slack-token"
+        signing_secret: "your_signing_secret"
+        app_token: "xapp-your-app-token"
+    settings:
+      channels:
+        - "C1234567890"
+        - "C0987654321"
+      notifications:
+        enabled: true
+        mention_all: false
+  
+  custom_webhook:
+    channel_id: custom_webhook
+    name: "Custom Webhook Channel"
+    type: webhook
+    default_account_id: webhook_handler
+    accounts:
+      webhook_handler:
+        account_id: webhook_handler
+        endpoint_url: "https://your-domain.com/api/webhook"
+        secret_key: "webhook_secret_123"
+        timeout: 30
+    settings:
+      methods:
+        - "POST"
+        - "PUT"
+      headers:
+        "Content-Type": "application/json"
+        "User-Agent": "AgentBus-Webhook/1.0"
+      retry_attempts: 3

@@ -1,0 +1,43 @@
+{
+  "channels": {
+    "test_channel": {
+      "channel_id": "test_channel",
+      "channel_name": "测试渠道",
+      "channel_type": "test",
+      "accounts": {
+        "test_account": {
+          "account_id": "test_account",
+          "name": "Test Bot",
+          "enabled": true,
+          "configured": true,
+          "token": "test_token_123",
+          "token_source": null,
+          "custom_settings": {},
+          "media_limits": {},
+          "security_settings": {}
+        }
+      },
+      "default_account_id": "test_account",
+      "capabilities": {
+        "chat_types": [
+          "direct",
+          "group"
+        ],
+        "polls": true,
+        "reactions": false,
+        "edit": false,
+        "unsend": false,
+        "reply": false,
+        "effects": false,
+        "group_management": false,
+        "threads": false,
+        "media": true,
+        "native_commands": false,
+        "block_streaming": false
+      },
+      "settings": {},
+      "enabled": true
+    }
+  },
+  "last_updated": "2026-01-29T13:06:15.035900"
+}

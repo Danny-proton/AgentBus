@@ -1,0 +1,39 @@
+{
+  "id": "017af58a-352d-4995-9248-79da59347eb7",
+  "name": "同步任务",
+  "func": "<function sync_task at 0x7fa74488ab60>",
+  "args": [
+    "同步",
+    5
+  ],
+  "kwargs": {},
+  "status": "completed",
+  "config": {
+    "max_retries": 3,
+    "retry_delay": 60.0,
+    "timeout": null,
+    "dependencies": [],
+    "priority": "TaskPriority.NORMAL",
+    "auto_retry": true,
+    "retry_backoff": 2.0,
+    "description": "",
+    "metadata": {}
+  },
+  "created_at": "2026-01-29T16:40:06.819369",
+  "updated_at": "2026-01-29T16:40:06.837508",
+  "started_at": "2026-01-29T16:40:06.837344",
+  "completed_at": "2026-01-29T16:40:06.837508",
+  "last_error": null,
+  "retry_count": 0,
+  "result": {
+    "success": true,
+    "data": 10,
+    "error": null,
+    "execution_time": 3.1948089599609375e-05,
+    "retry_count": 0,
+    "timestamp": "2026-01-29T16:40:06.837505"
+  },
+  "progress": 1.0,
+  "metadata": {},
+  "priority": 2
+}

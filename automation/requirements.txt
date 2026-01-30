@@ -1,0 +1,26 @@
+# AgentBus Browser Automation System Requirements
+
+# Core dependencies
+playwright>=1.40.0
+asyncio
+typing-extensions>=4.5.0
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+
+# Optional dependencies for advanced features
+Pillow>=9.0.0  # For image processing and screenshot comparison
+opencv-python>=4.8.0  # For advanced image comparison
+beautifulsoup4>=4.11.0  # For HTML parsing
+lxml>=4.9.0  # For XML/HTML parsing
+
+# Development dependencies
+black>=22.0.0  # Code formatting
+flake8>=5.0.0  # Code linting
+mypy>=0.991  # Type checking
+coverage>=6.5.0  # Test coverage
+
+# Documentation dependencies
+sphinx>=5.0.0  # Documentation generation
+sphinx-rtd-theme>=1.0.0  # Documentation theme

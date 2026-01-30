@@ -1,0 +1,29 @@
+{
+  "name": "agentbus",
+  "displayName": "AgentBus Agent Communication Service",
+  "description": "AgentBus守护进程服务，提供代理之间的通信功能",
+  "executablePath": "/usr/local/bin/agentbus",
+  "arguments": [
+    "--config",
+    "/etc/agentbus/config.json"
+  ],
+  "workingDirectory": "/var/lib/agentbus",
+  "environment": {
+    "AGENTBUS_LOG_LEVEL": "info",
+    "AGENTBUS_PORT": "8080",
+    "AGENTBUS_HOST": "0.0.0.0"
+  },
+  "autoRestart": true,
+  "restartDelay": 5000,
+  "maxRetries": 3,
+  "logLevel": "info",
+  "logFile": "/var/log/agentbus/agentbus.log",
+  "errorFile": "/var/log/agentbus/agentbus.err.log",
+  "monitoring": {
+    "enabled": true,
+    "interval": 30000,
+    "healthCheckUrl": "http://localhost:8080/health",
+    "maxMemoryUsage": 536870912,
+    "maxCpuUsage": 80
+  }
+}

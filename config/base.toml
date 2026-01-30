@@ -1,0 +1,46 @@
+# AgentBus 基础配置文件
+# 这个文件包含所有环境的默认配置
+
+[app]
+name = "AgentBus"
+version = "1.0.0"
+debug = false
+host = "localhost"
+port = 8000
+
+[logging]
+level = "INFO"
+format = "json"
+file_path = "logs/agentbus.log"
+rotation_size = "10MB"
+retention_days = 30
+console = true
+
+[session]
+timeout_minutes = 30
+max_concurrent_sessions = 100
+cleanup_interval_seconds = 300
+
+[diagnostics]
+enable_metrics = true
+metrics_port = 9090
+enable_tracing = false
+trace_sample_rate = 0.1
+health_check_endpoint = "/health"
+
+[security]
+secret_key_path = ".secrets/key.bin"
+encrypt_sensitive = true
+token_expire_hours = 24
+
+[database]
+url = "sqlite:///./data/agentbus.db"
+pool_size = 5
+echo = false
+max_overflow = 10
+
+[redis]
+url = "redis://localhost:6379/0"
+password = null
+timeout_seconds = 5
+pool_size = 10
