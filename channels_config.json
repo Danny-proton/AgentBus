@@ -7,10 +7,10 @@
       "accounts": {
         "test_account": {
           "account_id": "test_account",
-          "name": "Test Account",
+          "name": null,
           "enabled": true,
           "configured": true,
-          "token": "test_token",
+          "token": null,
           "token_source": null,
           "custom_settings": {},
           "media_limits": {},
@@ -20,10 +20,84 @@
       "default_account_id": "test_account",
       "capabilities": {
         "chat_types": [
+          "direct"
+        ],
+        "polls": false,
+        "reactions": false,
+        "edit": false,
+        "unsend": false,
+        "reply": false,
+        "effects": false,
+        "group_management": false,
+        "threads": false,
+        "media": false,
+        "native_commands": false,
+        "block_streaming": false
+      },
+      "settings": {},
+      "enabled": true
+    },
+    "text_channel": {
+      "channel_id": "text_channel",
+      "channel_name": "Text Channel",
+      "channel_type": "text",
+      "accounts": {
+        "text_account": {
+          "account_id": "text_account",
+          "name": null,
+          "enabled": true,
+          "configured": true,
+          "token": null,
+          "token_source": null,
+          "custom_settings": {},
+          "media_limits": {},
+          "security_settings": {}
+        }
+      },
+      "default_account_id": "text_account",
+      "capabilities": {
+        "chat_types": [
+          "direct"
+        ],
+        "polls": false,
+        "reactions": false,
+        "edit": false,
+        "unsend": false,
+        "reply": false,
+        "effects": false,
+        "group_management": false,
+        "threads": false,
+        "media": false,
+        "native_commands": false,
+        "block_streaming": false
+      },
+      "settings": {},
+      "enabled": true
+    },
+    "media_channel": {
+      "channel_id": "media_channel",
+      "channel_name": "Media Channel",
+      "channel_type": "media",
+      "accounts": {
+        "media_account": {
+          "account_id": "media_account",
+          "name": null,
+          "enabled": true,
+          "configured": true,
+          "token": null,
+          "token_source": null,
+          "custom_settings": {},
+          "media_limits": {},
+          "security_settings": {}
+        }
+      },
+      "default_account_id": "media_account",
+      "capabilities": {
+        "chat_types": [
           "direct",
           "group"
         ],
-        "polls": true,
+        "polls": false,
         "reactions": true,
         "edit": false,
         "unsend": false,
@@ -37,7 +111,44 @@
       },
       "settings": {},
       "enabled": true
+    },
+    "poll_channel": {
+      "channel_id": "poll_channel",
+      "channel_name": "Poll Channel",
+      "channel_type": "poll",
+      "accounts": {
+        "poll_account": {
+          "account_id": "poll_account",
+          "name": null,
+          "enabled": true,
+          "configured": true,
+          "token": null,
+          "token_source": null,
+          "custom_settings": {},
+          "media_limits": {},
+          "security_settings": {}
+        }
+      },
+      "default_account_id": "poll_account",
+      "capabilities": {
+        "chat_types": [
+          "group"
+        ],
+        "polls": true,
+        "reactions": true,
+        "edit": false,
+        "unsend": false,
+        "reply": false,
+        "effects": false,
+        "group_management": false,
+        "threads": false,
+        "media": false,
+        "native_commands": false,
+        "block_streaming": false
+      },
+      "settings": {},
+      "enabled": true
     }
   },
-  "last_updated": "2026-01-31T14:26:31.503426"
+  "last_updated": "2026-01-31T14:45:32.010579"
 }

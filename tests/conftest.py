@@ -8,21 +8,16 @@ import logging
 import asyncio
 import pytest
 from typing import Generator
+# Add project root to sys.path
 import sys
 from pathlib import Path
+project_root = str(Path(__file__).resolve().parent.parent)
 
-# Add project root to sys.path
-project_root = str(Path(__file__).parent.parent)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
-
-
-@pytest.fixture(scope="session")
-def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
-    """创建事件循环fixture用于所有异步测试"""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+elif sys.path[0] != project_root:
+    sys.path.remove(project_root)
+    sys.path.insert(0, project_root)
 
 
 @pytest.fixture
@@ -34,7 +29,15 @@ def mock_logger():
 @pytest.fixture
 def plugin_context(mock_logger):
     """创建插件上下文fixture"""
-    from plugins.core import PluginContext
+    try:
+        from plugins.core import PluginContext
+    except ImportError:
+        # 尝试相对导入或从 sys.modules 获取
+        import sys
+        if 'plugins.core' in sys.modules:
+            PluginContext = sys.modules['plugins.core'].PluginContext
+        else:
+            raise
     
     return PluginContext(
         config={"test_config": "test_value"},

@@ -19,14 +19,14 @@ from loguru import logger
 # 添加项目根目录到Python路径
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from agentbus.core.settings import settings
-from agentbus.services.hitl import HITLService
-from agentbus.services.knowledge_bus import KnowledgeBus
-from agentbus.services.multi_model_coordinator import MultiModelCoordinator
-from agentbus.services.stream_response import StreamResponseProcessor
-from agentbus.plugins.manager import PluginManager
-from agentbus.channels.manager import ChannelManager
-from agentbus.cli.commands import PluginCommands, ChannelCommands
+from core.settings import settings
+from services.hitl import HITLService
+from services.knowledge_bus import KnowledgeBus
+from services.multi_model_coordinator import MultiModelCoordinator
+from services.stream_response import StreamResponseProcessor
+from plugins.manager import PluginManager
+from channels.manager import ChannelManager
+from cli.commands import PluginCommands, ChannelCommands
 
 
 # CLI工具类
@@ -682,8 +682,8 @@ def cleanup(ctx):
 
 
 # 导入插件和渠道管理命令
-from agentbus.cli.commands.plugin_commands import plugin
-from agentbus.cli.commands.channel_commands import channel
+from cli.commands.plugin_commands import plugin
+from cli.commands.channel_commands import channel
 
 # 注册插件和渠道管理命令组
 cli.add_command(plugin)

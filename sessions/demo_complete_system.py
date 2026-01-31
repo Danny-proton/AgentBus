@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # 导入新的会话管理系统
-from agentbus.sessions import (
+from sessions import (
     # 完整系统
     initialize_sessions,
     create_default_session_system,

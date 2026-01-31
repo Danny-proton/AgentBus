@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 from unittest.mock import Mock, AsyncMock, patch
 
-from agentbus.media_understanding import (
+from media_understanding import (
     MediaUnderstandingSystem,
     MediaUnderstandingContext,
     MediaAttachment,
@@ -26,7 +26,7 @@ from agentbus.media_understanding import (
     get_system_info
 )
 
-from agentbus.media_understanding.types import (
+from media_understanding.types import (
     AudioTranscriptionRequest,
     ImageDescriptionRequest,
     VideoDescriptionRequest,

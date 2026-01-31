@@ -9,7 +9,7 @@ import asyncio
 from pathlib import Path
 
 # 导入配置管理组件
-from agentbus.config import (
+from config import (
     ConfigManager,
     ProfileManager, 
     EnvLoader,

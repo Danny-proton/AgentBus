@@ -113,20 +113,20 @@ class PluginManager:
         self._plugin_dirs = plugin_dirs or self._get_default_plugin_dirs()
         
         self._logger.info("PluginManager initialized")
-    
     def _get_default_plugin_dirs(self) -> List[str]:
         """获取默认插件搜索目录"""
         dirs = [
-            os.path.join(os.path.dirname(__file__), "extensions"),
-            os.path.join(os.getcwd(), "plugins"),
-            os.path.join(os.path.expanduser("~"), ".agentbus", "plugins"),
+            os.path.normcase(os.path.abspath(os.path.join(os.path.dirname(__file__), "extensions"))),
+            os.path.normcase(os.path.abspath(os.path.join(os.getcwd(), "plugins"))),
+            os.path.normcase(os.path.abspath(os.path.join(os.path.expanduser("~"), ".agentbus", "plugins"))),
         ]
         
         # 添加环境变量中指定的目录
         if env_dirs := os.getenv("AGENTBUS_PLUGIN_DIRS"):
-            dirs.extend(env_dirs.split(os.pathsep))
+            for d in env_dirs.split(os.pathsep):
+                dirs.append(os.path.normcase(os.path.abspath(d)))
         
-        return [d for d in dirs if os.path.exists(d)]
+        return dirs
     
     async def discover_plugins(self) -> List[PluginInfo]:
         """
@@ -243,9 +243,31 @@ class PluginManager:
         """
         async with self._lock:
             if plugin_id in self._plugins:
-                self._logger.warning(f"Plugin {plugin_id} already loaded")
+                self._logger.info(f"Plugin {plugin_id} already loaded")
                 return self._plugins[plugin_id]
             
+            # 确定模块路径
+            if not module_path:
+                module_path = self._find_plugin_module(plugin_id)
+            
+            if not module_path:
+                raise PluginLoadError(f"Cannot find plugin module: {plugin_id}")
+            
+            if not os.path.isabs(module_path):
+                # 尝试相对于搜索目录查找
+                found = False
+                for d in self._plugin_dirs:
+                    full_path = os.path.join(d, module_path)
+                    if os.path.exists(full_path):
+                        module_path = full_path
+                        found = True
+                        break
+                if not found:
+                    raise PluginLoadError(f"Cannot find plugin module: {module_path}")
+            
+            if not os.path.exists(module_path):
+                raise PluginLoadError(f"Cannot find module: {module_path}")
+                
             try:
                 self._logger.info(f"Loading plugin: {plugin_id}")
                 
@@ -268,14 +290,32 @@ class PluginManager:
                 self._plugins[plugin_id] = plugin
                 self._plugin_modules[plugin_id] = plugin_class
                 
-                # 更新插件信息
-                if plugin_id in self._plugin_info:
-                    self._plugin_info[plugin_id].status = PluginStatus.LOADED
+                # 核心修复：更新或创建插件信息，确保 status 正确
+                if plugin_id not in self._plugin_info:
+                    info = plugin.get_info()
+                    self._plugin_info[plugin_id] = PluginInfo(
+                        plugin_id=plugin_id,
+                        name=info.get('name', plugin_id),
+                        version=info.get('version', '0.0.0'),
+                        description=info.get('description', ''),
+                        author=info.get('author', ''),
+                        dependencies=info.get('dependencies', []),
+                        module_path=module_path,
+                        class_name=class_name or plugin_class.__name__
+                    )
+                
+                # 核心修复：同时更新插件实例和信息的状态
+                self._plugin_info[plugin_id].status = PluginStatus.LOADED
+                if hasattr(plugin, 'status'):
+                    plugin.status = PluginStatus.LOADED
                 
                 self._logger.info(f"Plugin {plugin_id} loaded successfully")
                 return plugin
                 
             except Exception as e:
+                # 如果是业务逻辑抛出的异常，直接透传或包装
+                if isinstance(e, PluginLoadError):
+                    raise
                 self._logger.error(f"Failed to load plugin {plugin_id}: {e}")
                 raise PluginLoadError(f"Plugin loading failed: {e}")
     
@@ -290,6 +330,7 @@ class PluginManager:
             raise PluginLoadError(f"Cannot find module: {module_path}")
         
         module = importlib.util.module_from_spec(spec)
+        module.__package__ = 'plugins'  # 核心修复：设置正确的包名以支持相对导入
         spec.loader.exec_module(module)
         
         # 查找插件类
@@ -368,6 +409,11 @@ class PluginManager:
                 # 清理注册表
                 self._cleanup_plugin_registrations(plugin_id)
                 
+                # 核心修复：更新插件状态
+                plugin = self._plugins[plugin_id]
+                if hasattr(plugin, 'status'):
+                    plugin.status = PluginStatus.UNLOADED
+                
                 # 移除插件
                 del self._plugins[plugin_id]
                 del self._plugin_modules[plugin_id]
@@ -432,8 +478,9 @@ class PluginManager:
             
             # 激活插件
             success = await plugin.activate()
-            if not success:
-                raise PluginActivationError("Plugin activation failed")
+            # 核心修复：如果 activate() 返回 None 或者 True，都视为成功
+            if success is False:
+                raise PluginActivationError("Plugin.activate() returned False")
             
             # 注册插件的工具和钩子
             await self._register_plugin_resources(plugin_id)

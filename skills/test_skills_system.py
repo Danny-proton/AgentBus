@@ -9,7 +9,7 @@ import logging
 import tempfile
 from pathlib import Path
 
-from agentbus.skills import (
+from skills import (
     SkillManager, BaseSkill, SkillMetadata, SkillFactory,
     SkillType, SkillContext, SkillStatus,
     SkillLifecycleManager, LifecycleConfig,

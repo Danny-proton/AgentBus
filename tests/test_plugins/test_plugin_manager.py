@@ -811,7 +811,7 @@ class WorkflowPlugin(AgentBusPlugin):
             plugin_file = os.path.join(plugin_dir, f"plugin_{i}.py")
             with open(plugin_file, 'w') as f:
                 f.write(f'''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class Plugin{i}(AgentBusPlugin):
     def get_info(self):
@@ -875,7 +875,7 @@ class Plugin{i}(AgentBusPlugin):
         plugin_file = os.path.join(plugin_dir, "error_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class ErrorPlugin(AgentBusPlugin):
     def get_info(self):

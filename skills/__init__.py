@@ -12,7 +12,7 @@ AgentBus技能系统
 
 使用示例:
 ```python
-from agentbus.skills import SkillManager, BaseSkill, SkillMetadata, SkillFactory
+from skills import SkillManager, BaseSkill, SkillMetadata, SkillFactory
 
 # 创建技能管理器
 manager = SkillManager(workspace_dir="/path/to/workspace", 

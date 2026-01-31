@@ -10,7 +10,7 @@ import logging
 from typing import List, Dict, Any
 
 # Import the enhanced memory management system
-from agentbus.memory import (
+from memory import (
     EnhancedMemoryManager,
     EnhancedMemoryConfig,
     SearchStrategy,

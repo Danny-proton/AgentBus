@@ -9,8 +9,8 @@
       "updated_at": "2026-01-29T12:24:45.919682",
       "created_by": "test_user",
       "tags": [
-        "平台特性",
-        "系统介绍"
+        "系统介绍",
+        "平台特性"
       ],
       "confidence": 1.0,
       "usage_count": 2,
@@ -33,9 +33,9 @@
       "updated_at": "2026-01-29T12:24:45.919787",
       "created_by": "system",
       "tags": [
+        "启动",
         "CLI",
-        "命令",
-        "启动"
+        "命令"
       ],
       "confidence": 0.95,
       "usage_count": 1,
@@ -61,8 +61,8 @@
       "created_by": "expert",
       "tags": [
         "HITL",
-        "最佳实践",
-        "请求"
+        "请求",
+        "最佳实践"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -83,8 +83,8 @@
       "updated_at": "2026-01-29T12:25:05.286959",
       "created_by": "test_user",
       "tags": [
-        "平台特性",
-        "系统介绍"
+        "系统介绍",
+        "平台特性"
       ],
       "confidence": 1.0,
       "usage_count": 2,
@@ -107,9 +107,9 @@
       "updated_at": "2026-01-29T12:25:05.287048",
       "created_by": "system",
       "tags": [
+        "启动",
         "CLI",
-        "命令",
-        "启动"
+        "命令"
       ],
       "confidence": 0.95,
       "usage_count": 1,
@@ -135,8 +135,8 @@
       "created_by": "expert",
       "tags": [
         "HITL",
-        "最佳实践",
-        "请求"
+        "请求",
+        "最佳实践"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -158,8 +158,8 @@
       "created_by": "ai_agent",
       "tags": [
         "知识总线",
-        "搜索",
-        "索引"
+        "索引",
+        "搜索"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -178,8 +178,8 @@
       "created_by": "user",
       "tags": [
         "HITL",
-        "协作",
-        "人工智能"
+        "人工智能",
+        "协作"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -222,8 +222,8 @@
       "created_by": "system",
       "tags": [
         "HITL",
-        "最佳实践",
-        "请求创建"
+        "请求创建",
+        "最佳实践"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -241,9 +241,9 @@
       "updated_at": "2026-01-29T12:29:45.275173",
       "created_by": "system",
       "tags": [
-        "紧急处理",
+        "优先级",
         "HITL",
-        "优先级"
+        "紧急处理"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -262,9 +262,9 @@
       "created_by": "expert_developer",
       "tags": [
         "HITL",
-        "API",
         "依赖注入",
-        "修复"
+        "修复",
+        "API"
       ],
       "confidence": 0.95,
       "usage_count": 0,
@@ -286,8 +286,8 @@
       "updated_at": "2026-01-29T13:24:10.664376",
       "created_by": "test_user",
       "tags": [
-        "测试",
-        "原有"
+        "原有",
+        "测试"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -305,8 +305,8 @@
       "updated_at": "2026-01-29T13:26:10.934999",
       "created_by": "test_user",
       "tags": [
-        "测试",
-        "原有"
+        "原有",
+        "测试"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -324,8 +324,8 @@
       "updated_at": "2026-01-29T13:26:10.974906",
       "created_by": "plugin_test",
       "tags": [
-        "测试",
-        "插件"
+        "插件",
+        "测试"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -362,8 +362,8 @@
       "updated_at": "2026-01-29T13:26:30.971110",
       "created_by": "test_user",
       "tags": [
-        "测试",
-        "原有"
+        "原有",
+        "测试"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -381,8 +381,8 @@
       "updated_at": "2026-01-29T13:26:31.217815",
       "created_by": "plugin_test",
       "tags": [
-        "测试",
-        "插件"
+        "插件",
+        "测试"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -419,8 +419,8 @@
       "updated_at": "2026-01-29T13:26:31.298719",
       "created_by": "compat_test",
       "tags": [
-        "测试1",
-        "兼容"
+        "兼容",
+        "测试1"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -438,8 +438,8 @@
       "updated_at": "2026-01-29T13:26:31.298561",
       "created_by": "compat_test",
       "tags": [
-        "测试2",
-        "兼容"
+        "兼容",
+        "测试2"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -457,8 +457,8 @@
       "updated_at": "2026-01-29T13:27:09.649017",
       "created_by": "test_user",
       "tags": [
-        "测试",
-        "原有"
+        "原有",
+        "测试"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -476,8 +476,8 @@
       "updated_at": "2026-01-29T13:27:09.676045",
       "created_by": "plugin_test",
       "tags": [
-        "测试",
-        "插件"
+        "插件",
+        "测试"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -514,8 +514,8 @@
       "updated_at": "2026-01-29T13:27:09.722830",
       "created_by": "compat_test",
       "tags": [
-        "测试1",
-        "兼容"
+        "兼容",
+        "测试1"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -533,8 +533,8 @@
       "updated_at": "2026-01-29T13:27:09.722670",
       "created_by": "compat_test",
       "tags": [
-        "测试2",
-        "兼容"
+        "兼容",
+        "测试2"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -552,8 +552,8 @@
       "updated_at": "2026-01-29T13:27:35.623017",
       "created_by": "test_user",
       "tags": [
-        "测试",
-        "原有"
+        "原有",
+        "测试"
       ],
       "confidence": 1.0,
       "usage_count": 0,
@@ -571,8 +571,8 @@
       "updated_at": "2026-01-29T13:27:35.658434",
       "created_by": "plugin_test",
       "tags": [
-        "测试",
-        "插件"
+        "插件",
+        "测试"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -609,8 +609,8 @@
       "updated_at": "2026-01-29T13:27:35.709580",
       "created_by": "compat_test",
       "tags": [
-        "测试1",
-        "兼容"
+        "兼容",
+        "测试1"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -628,10 +628,236 @@
       "updated_at": "2026-01-29T13:27:35.709386",
       "created_by": "compat_test",
       "tags": [
-        "测试2",
-        "兼容"
+        "兼容",
+        "测试2"
       ],
       "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "f347a21e-6234-42ca-a87d-39123952a1ec",
+      "content": "这是一个测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:43.932610",
+      "updated_at": "2026-01-31T14:45:43.932610",
+      "created_by": "test_user",
+      "tags": [
+        "工具",
+        "测试"
+      ],
+      "confidence": 0.9,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "e44798af-54d0-42a0-af99-32559e743eb7",
+      "content": "AgentBus是一个智能协作平台",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:43.966388",
+      "updated_at": "2026-01-31T14:45:43.966388",
+      "created_by": "test_user",
+      "tags": [
+        "平台",
+        "AgentBus"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "dea8e87d-be8c-4768-aee2-53eb800f6969",
+      "content": "更新后的内容",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:43.978771",
+      "updated_at": "2026-01-31T14:45:43.979775",
+      "created_by": "test_user",
+      "tags": [],
+      "confidence": 0.8,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "ef44a276-a7d2-4b4d-ad70-a3efc9998398",
+      "content": "知识1",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.003832",
+      "updated_at": "2026-01-31T14:45:44.003832",
+      "created_by": "user1",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "7995c16e-8c02-4acd-83b3-2f89c942fd58",
+      "content": "知识2",
+      "knowledge_type": "procedure",
+      "source": "manual_entry",
+      "created_at": "2026-01-31T14:45:44.003832",
+      "updated_at": "2026-01-31T14:45:44.003832",
+      "created_by": "user2",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "274a2848-0b3a-4904-bf9e-cca6353928d9",
+      "content": "事实知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.016667",
+      "updated_at": "2026-01-31T14:45:44.016667",
+      "created_by": "user1",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "29239115-3fad-4b99-aa32-7967a305a4d1",
+      "content": "程序知识",
+      "knowledge_type": "procedure",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.016667",
+      "updated_at": "2026-01-31T14:45:44.016667",
+      "created_by": "user2",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "91565981-4002-4ab0-b0d4-b5a256b8e7f1",
+      "content": "AI相关知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.028874",
+      "updated_at": "2026-01-31T14:45:44.028874",
+      "created_by": "user1",
+      "tags": [
+        "机器学习",
+        "AI"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "49d39dc2-cd08-4f93-9fd7-c6cc469a42b5",
+      "content": "编程相关知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.029393",
+      "updated_at": "2026-01-31T14:45:44.029393",
+      "created_by": "user2",
+      "tags": [
+        "编程",
+        "Python"
+      ],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "56aa33e1-eec4-41f7-93fe-1bd921700d14",
+      "content": "将被使用的知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.039044",
+      "updated_at": "2026-01-31T14:45:44.039044",
+      "created_by": "test_user",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 1,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "d5db801f-e0fb-4858-b230-f69a915b2ad4",
+      "content": "插件2的知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.114121",
+      "updated_at": "2026-01-31T14:45:44.114121",
+      "created_by": "plugin2",
+      "tags": [],
+      "confidence": 1.0,
+      "usage_count": 0,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "c5338309-1db8-4142-a493-979df883744c",
+      "content": "AgentBus是一个强大的集成平台",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.127177",
+      "updated_at": "2026-01-31T14:45:44.127702",
+      "created_by": "integration_test",
+      "tags": [
+        "集成",
+        "测试"
+      ],
+      "confidence": 0.95,
+      "usage_count": 1,
+      "status": "active",
+      "related_knowledge": [],
+      "metadata": {},
+      "context": {}
+    },
+    {
+      "id": "483dfdeb-39c9-4996-97c6-37dd2c7ba960",
+      "content": "这是一个基本测试知识",
+      "knowledge_type": "fact",
+      "source": "user_input",
+      "created_at": "2026-01-31T14:45:44.136990",
+      "updated_at": "2026-01-31T14:45:44.136990",
+      "created_by": "basic_test",
+      "tags": [
+        "测试",
+        "基本"
+      ],
+      "confidence": 0.8,
       "usage_count": 0,
       "status": "active",
       "related_knowledge": [],
@@ -640,11 +866,24 @@
     }
   ],
   "stats": {
-    "total_knowledge": 0,
-    "by_type": {},
-    "by_source": {},
-    "total_usage": 0,
-    "average_confidence": 0.0
+    "total_knowledge": 44,
+    "by_type": {
+      "fact": 31,
+      "procedure": 8,
+      "context": 1,
+      "relation": 0,
+      "rule": 3,
+      "metadata": 1
+    },
+    "by_source": {
+      "user_input": 29,
+      "agent_learning": 2,
+      "manual_entry": 12,
+      "import": 0,
+      "auto_generated": 1
+    },
+    "total_usage": 8,
+    "average_confidence": 0.927
   },
-  "last_updated": "2026-01-31T10:50:12.078845"
+  "last_updated": "2026-01-31T14:45:44.140078"
 }

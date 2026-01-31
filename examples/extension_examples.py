@@ -12,7 +12,7 @@ License: MIT
 
 import logging
 from typing import Dict, List, Set, Any
-from agentbus.extensions import (
+from extensions import (
     Extension, ExtensionId, ExtensionName, ExtensionType, CapabilityName,
     ExtensionDependency, ExtensionVersion, ExtensionState, ExtensionType as ExtType
 )
