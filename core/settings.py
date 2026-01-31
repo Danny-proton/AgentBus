@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     """AgentBus 应用设置"""
     
     model_config = ConfigDict(
-        env_prefix="AGENTBUS_",
+        env_prefix="",
         case_sensitive=False,
         extra="ignore"
     )
@@ -65,6 +65,10 @@ class Settings(BaseSettings):
     # 外部服务设置
     openai_api_key: Optional[str] = Field(default=None)
     anthropic_api_key: Optional[str] = Field(default=None)
+    
+    # ZhipuAI (GLM)
+    zhipu_api_key: Optional[str] = Field(default=None)
+    zhipu_base_url: str = Field(default="https://open.bigmodel.cn/api/paas/v4/")
     
     # HITL 设置
     hitl_timeout_default: int = Field(default=30)

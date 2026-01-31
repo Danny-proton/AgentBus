@@ -9,8 +9,8 @@ Knowledge Bus Plugin for AgentBus
 import asyncio
 from typing import Dict, Any, List, Optional, Set
 from datetime import datetime
-from agentbus.plugins import AgentBusPlugin, PluginContext
-from agentbus.services.knowledge_bus import (
+from plugins import AgentBusPlugin, PluginContext
+from services.knowledge_bus import (
     KnowledgeBus,
     KnowledgeBusWithPluginSupport,
     KnowledgeType, 

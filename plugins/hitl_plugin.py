@@ -21,8 +21,8 @@ from typing import Dict, List, Optional, Any, Set
 from dataclasses import asdict
 from enum import Enum
 
-from ..plugins import AgentBusPlugin, PluginContext
-from ..services.hitl import HITLService, HITLRequest, HITLResponse, HITLStatus, HITLPriority
+from plugins import AgentBusPlugin, PluginContext
+from services.hitl import HITLService, HITLRequest, HITLResponse, HITLStatus, HITLPriority
 
 
 class HITLPlugin(AgentBusPlugin):

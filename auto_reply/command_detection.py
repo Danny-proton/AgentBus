@@ -211,7 +211,7 @@ def build_command_detection() -> CommandDetection:
             else:
                 patterns.append(f"{escaped}(?:\\s*:\\s*)?")
     
-    regex = re.compile(f"^(?:{"|".join(patterns)})$", re.IGNORECASE) if patterns else re.compile(r"$^")
+    regex = re.compile(f"^(?:{'|'.join(patterns)})$", re.IGNORECASE) if patterns else re.compile(r"$^")
     
     return CommandDetection(exact=exact, regex=regex)
 

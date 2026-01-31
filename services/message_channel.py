@@ -15,7 +15,7 @@ from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 from loguru import logger
 
-from ..core.settings import settings
+from core.settings import settings
 
 
 class MessageType(Enum):

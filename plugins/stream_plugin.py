@@ -19,7 +19,7 @@ from typing import Dict, List, Any, Optional, AsyncGenerator, Callable, Union
 from enum import Enum
 
 from .core import AgentBusPlugin, PluginContext, PluginTool, PluginHook, PluginResult
-from ..services.stream_response import (
+from services.stream_response import (
     StreamResponseProcessor,
     StreamRequest,
     StreamChunk,

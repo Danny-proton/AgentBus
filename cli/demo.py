@@ -14,8 +14,8 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from agentbus.cli.commands.command_parser import AdvancedCommandParser, COMMAND_SCHEMAS
-from agentbus.cli.main import AgentBusCLI
+from cli.commands.command_parser import AdvancedCommandParser, COMMAND_SCHEMAS
+from cli.main import AgentBusCLI
 
 
 def demo_command_parser():

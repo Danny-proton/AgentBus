@@ -17,9 +17,9 @@ import uuid
 from datetime import datetime
 from typing import Dict, Any, List
 
-from agentbus.plugins.stream_plugin import StreamPlugin, StreamEvent
-from agentbus.plugins.core import PluginContext, PluginStatus
-from agentbus.services.stream_response import (
+from plugins.stream_plugin import StreamPlugin, StreamEvent
+from plugins.core import PluginContext, PluginStatus
+from services.stream_response import (
     StreamRequest,
     StreamChunk,
     StreamEventType,

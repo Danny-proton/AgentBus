@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from ..schemas.tool import (
+from api.schemas.tool import (
     ToolCallRequest, ToolCallResponse, ToolResult,
     ToolDefinition, ToolRegistryResponse, ToolExecutionLog,
     ToolStatistics, ToolCapability, ToolHealth

@@ -17,8 +17,8 @@ from typing import Optional, List, Dict, Any
 import uvicorn
 
 from .main_app import AgentBusApplication, create_application, destroy_application
-from ..api.main import create_app as create_fastapi_app
-from ..core.settings import settings
+from api.main import create_app as create_fastapi_app
+from core.settings import settings
 import logging
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException, Depends, Query
 
-from ..schemas.agent import (
+from api.schemas.agent import (
     AgentCreate, AgentResponse, AgentUpdate, 
     AgentStats, AgentCapability, AgentTool,
     AgentHealth

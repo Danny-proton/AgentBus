@@ -26,13 +26,13 @@ from pathlib import Path
 from typing import Dict, Any, List
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
 
-from agentbus.plugins.manager import (
+from plugins.manager import (
     PluginManager,
     PluginInfo,
     PluginLoadError,
     PluginActivationError
 )
-from agentbus.plugins.core import (
+from plugins.core import (
     PluginContext,
     AgentBusPlugin,
     PluginStatus,
@@ -104,7 +104,7 @@ class TestPluginManager:
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -149,7 +149,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -179,7 +179,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -233,7 +233,7 @@ def some_function():
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -271,7 +271,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -306,7 +306,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -338,7 +338,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -368,7 +368,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -390,7 +390,7 @@ class TestPlugin(AgentBusPlugin):
         # 修改插件文件
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -423,7 +423,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -461,7 +461,7 @@ class TestPlugin(AgentBusPlugin):
         plugin1_file = os.path.join(temp_plugin_dir, "plugin1.py")
         with open(plugin1_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class Plugin1(AgentBusPlugin):
     def get_info(self):
@@ -486,7 +486,7 @@ class Plugin1(AgentBusPlugin):
         plugin2_file = os.path.join(temp_plugin_dir, "plugin2.py")
         with open(plugin2_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class Plugin2(AgentBusPlugin):
     def get_info(self):
@@ -531,7 +531,7 @@ class Plugin2(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -632,7 +632,7 @@ class TestPlugin(AgentBusPlugin):
         plugin_file = os.path.join(temp_plugin_dir, "test_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def get_info(self):
@@ -708,7 +708,7 @@ class TestPluginManagerIntegration:
         plugin_file = os.path.join(plugin_dir, "workflow_plugin.py")
         with open(plugin_file, 'w') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 import asyncio
 
 class WorkflowPlugin(AgentBusPlugin):

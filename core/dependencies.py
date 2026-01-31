@@ -8,16 +8,16 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import asyncio
 
-from ..services.hitl import HITLService
-from ..services.communication_map import CommunicationMap
-from ..services.message_channel import MessageChannel
-from ..services.knowledge_bus import KnowledgeBus
-from ..services.multi_model_coordinator import MultiModelCoordinator
-from ..services.stream_response import StreamResponseProcessor
-from ..plugins.manager import PluginManager
-from ..channels.manager import ChannelManager
-from ..core.main_app import get_application
-from ..core.settings import settings
+from services.hitl import HITLService
+from services.communication_map import CommunicationMap
+from services.message_channel import MessageChannel
+from services.knowledge_bus import KnowledgeBus
+from services.multi_model_coordinator import MultiModelCoordinator
+from services.stream_response import StreamResponseProcessor
+from plugins.manager import PluginManager
+from channels.manager import ChannelManager
+from core.main_app import get_application
+from core.settings import settings
 
 
 # 全局服务实例
@@ -139,17 +139,7 @@ async def get_channel_manager() -> ChannelManager:
 security = HTTPBearer()
 
 
-async def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
-    """验证API密钥"""
-    # 这里可以实现更复杂的认证逻辑
-    # 目前简化为检查Bearer token
-    if credentials.credentials != "your-api-key":  # 在实际应用中应该使用环境变量
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="无效的API密钥",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return credentials.credentials
+from core.auth import verify_api_key
 
 
 # 可选的认证依赖
@@ -221,7 +211,7 @@ async def startup_event():
     
     try:
         # 获取主应用程序实例
-        from ..core.main_app import get_application
+        from core.main_app import get_application
         app = get_application()
         
         # 设置服务实例引用

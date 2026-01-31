@@ -25,16 +25,25 @@ slack-sdk>=3.21.0
 
 # 媒体处理
 Pillow>=10.0.0
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+beautifulsoup4>=4.11.0
+python-magic-bin>=0.4.14; sys_platform == 'win32'
+python-magic>=0.4.15; sys_platform != 'win32'
+SpeechRecognition>=3.10.0
 
 # 数据处理
 sqlalchemy>=2.0.0
 redis>=5.0.0
+numpy>=1.21.0
+pandas>=1.5.0
 
 # 工具库
 python-dotenv>=1.0.0
 click>=8.1.0
 rich>=13.0.0
 httpx>=0.25.0
+
 
 # 安全
 cryptography>=41.0.0
@@ -43,3 +52,5 @@ pyjwt>=2.8.0
 
 # 监控和日志
 loguru>=0.7.0
+matplotlib>=3.5.0
+seaborn>=0.11.0

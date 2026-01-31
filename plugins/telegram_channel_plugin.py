@@ -23,7 +23,7 @@ from datetime import datetime
 import requests
 from urllib.parse import urljoin
 
-from ..plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
+from plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
 
 
 class TelegramChannelPlugin(AgentBusPlugin):

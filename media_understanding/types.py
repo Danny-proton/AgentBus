@@ -131,9 +131,9 @@ class ImageDescriptionRequest:
     """图像描述请求"""
     buffer: bytes
     file_name: str
-    mime: Optional[str] = None
     model: str
     provider: str
+    mime: Optional[str] = None
     prompt: Optional[str] = None
     max_tokens: int = 1000
     temperature: float = 0.0

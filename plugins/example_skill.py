@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass
 from enum import Enum
 
-from ..plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
+from plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
 
 
 class SkillLevel(Enum):

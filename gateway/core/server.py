@@ -107,29 +107,47 @@ class GatewayServer:
         logger.info(f"Auth mode: {self.config.auth_mode.value}")
         logger.info(f"Max connections: {self.config.max_connections}")
         
+        max_retries = 5
+        retry_count = 0
+        original_port = self.config.port
+        
         try:
-            # 创建WebSocket服务器
-            self.websocket_server = await serve(
-                self.connection_manager.handle_connection,
-                self.config.host,
-                self.config.port,
-                max_size=25 * 1024 * 1024,  # 25MB
-                max_queue=32,
-                ping_interval=20,
-                ping_timeout=10
-            )
-            
-            logger.info("WebSocket server started successfully")
-            
-            # 注册信号处理器
-            self._register_signal_handlers()
-            
-            # 开始主循环
-            await self._main_loop()
-            
-        except Exception as e:
-            logger.error(f"Failed to start server: {e}")
-            raise
+            while retry_count < max_retries:
+                try:
+                    # 创建WebSocket服务器
+                    self.websocket_server = await serve(
+                        self.connection_manager.handle_connection,
+                        self.config.host,
+                        self.config.port,
+                        max_size=25 * 1024 * 1024,  # 25MB
+                        max_queue=32,
+                        ping_interval=20,
+                        ping_timeout=10
+                    )
+                    
+                    if retry_count > 0:
+                        logger.info(f"WebSocket server started successfully on secondary port: {self.config.port}")
+                    else:
+                        logger.info("WebSocket server started successfully")
+                    
+                    # 注册信号处理器
+                    self._register_signal_handlers()
+                    
+                    # 开始主循环
+                    await self._main_loop()
+                    break
+                    
+                except OSError as e:
+                    if e.errno == 10048 or "address already in use" in str(e).lower():
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            new_port = original_port + retry_count
+                            logger.warning(f"Port {self.config.port} is already in use. Retrying with port {new_port}... ({retry_count}/{max_retries})")
+                            self.config.port = new_port
+                            continue
+                    
+                    logger.error(f"Failed to start server: {e}")
+                    raise
         finally:
             await self.stop()
     

@@ -13,12 +13,12 @@ from pathlib import Path
 from datetime import datetime
 from loguru import logger
 
-from agentbus.automation.browser import BrowserAutomation, BrowserConfig, BrowserStatus, TabInfo
-from agentbus.automation.playwright_manager import PlaywrightManager
-from agentbus.automation.screenshot import ScreenshotManager
-from agentbus.automation.page_navigator import PageNavigator
-from agentbus.automation.element_finder import ElementFinder
-from agentbus.automation.form_handler import FormHandler
+from automation.browser import BrowserAutomation, BrowserConfig, BrowserStatus, TabInfo
+from automation.playwright_manager import PlaywrightManager
+from automation.screenshot import ScreenshotManager
+from automation.page_navigator import PageNavigator
+from automation.element_finder import ElementFinder
+from automation.form_handler import FormHandler
 
 
 class BrowserCommands:
@@ -815,11 +815,11 @@ def find(ctx, selector, by_method):
         click.echo(f"❌ 查找元素失败: {e}", err=True)
 
 
-@browser.command()
+@browser.command(name='click')
 @click.argument('selector')
 @click.option('--by', 'by_method', default='css', type=click.Choice(['css', 'xpath']), help='查找方式')
 @click.pass_context
-def click(ctx, selector, by_method):
+def click_element_cmd(ctx, selector, by_method):
     """点击元素"""
     browser_automation = ctx.obj.get('browser_automation')
     

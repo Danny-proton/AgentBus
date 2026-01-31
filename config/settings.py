@@ -169,7 +169,7 @@ class ExtendedSettings(BaseSettings):
     # 安全配置
     # ============================================================================
     secret_key: str = Field(default="your-secret-key-here-change-in-production", description="应用密钥")
-    jwt_secret: str = Field(default="your-jwt-secret-key", description="JWT密钥")
+    jwt_secret: str = Field(default="your-jwt-secret-key-change-in-production-please", description="JWT密钥")
     jwt_algorithm: str = Field(default="HS256", description="JWT算法")
     jwt_access_token_expire_minutes: int = Field(default=30, ge=1, description="JWT访问令牌过期时间（分钟）")
     jwt_refresh_token_expire_days: int = Field(default=7, ge=1, description="JWT刷新令牌过期时间（天）")
@@ -209,6 +209,16 @@ class ExtendedSettings(BaseSettings):
     # Minimax
     minimax_api_key: Optional[str] = Field(default=None, description="Minimax API密钥")
     minimax_group_id: Optional[str] = Field(default=None, description="Minimax组ID")
+
+    # ZhipuAI (GLM)
+    zhipu_api_key: Optional[str] = Field(default=None, description="ZhipuAI API密钥")
+    zhipu_base_url: str = Field(default="https://open.bigmodel.cn/api/paas/v4/", description="ZhipuAI基础URL")
+
+    # Local Model (vLLM/Ollama)
+    local_model_id: str = Field(default="qwen3_32B", description="本地模型ID")
+    local_model_base_url: str = Field(default="http://127.0.0.1:8030/v1", description="本地模型基础URL")
+    local_model_api_key: str = Field(default="empty", description="本地模型API密钥")
+
     
     # ============================================================================
     # HITL (Human-in-the-Loop) 配置
@@ -406,7 +416,7 @@ class ExtendedSettings(BaseSettings):
         path = Path(v)
         return str(path.absolute())
     
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def validate_dependencies(cls, values):
         """验证配置依赖关系"""
         # Redis 配置依赖
@@ -446,7 +456,8 @@ class ExtendedSettings(BaseSettings):
             # 隐藏敏感信息
             secret_fields = [
                 "secret_key", "jwt_secret", "openai_api_key", "anthropic_api_key",
-                "google_api_key", "minimax_api_key", "redis_password", "smtp_password"
+                "google_api_key", "minimax_api_key", "zhipu_api_key", "redis_password", "smtp_password",
+                "local_model_api_key"
             ]
             for field in secret_fields:
                 if field in data:

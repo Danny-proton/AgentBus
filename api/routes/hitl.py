@@ -9,7 +9,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import asyncio
 
-from ..schemas.hitl import (
+from api.schemas.hitl import (
     HITLRequestCreate,
     HITLRequestResponse,
     HITLResponseCreate,
@@ -20,9 +20,9 @@ from ..schemas.hitl import (
     ContactMatchRequest,
     ContactMatchResponse
 )
-from ...services.hitl import HITLService, HITLPriority, HITLStatus
-from ...services.communication_map import CommunicationMap
-from ...core.dependencies import get_hitl_service, get_communication_map
+from services.hitl import HITLService, HITLPriority, HITLStatus
+from services.communication_map import CommunicationMap
+from core.dependencies import get_hitl_service, get_communication_map
 
 router = APIRouter(prefix="/hitl", tags=["HITL - 人在回路"])
 

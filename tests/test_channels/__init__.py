@@ -36,7 +36,7 @@ def event_loop():
 @pytest.fixture
 def mock_message_metadata():
     """模拟消息元数据"""
-    from agentbus.channels.base import MessageMetadata, ChatType
+    from channels.base import MessageMetadata, ChatType
     from datetime import datetime
     
     return MessageMetadata(
@@ -55,7 +55,7 @@ def mock_message_metadata():
 @pytest.fixture
 def mock_message(mock_message_metadata):
     """模拟消息对象"""
-    from agentbus.channels.base import Message, MessageType
+    from channels.base import Message, MessageType
     
     return Message(
         type=MessageType.TEXT,
@@ -66,7 +66,7 @@ def mock_message(mock_message_metadata):
 @pytest.fixture
 def mock_channel_config():
     """模拟渠道配置"""
-    from agentbus.channels.base import ChannelConfig, ChannelAccountConfig, ChannelCapabilities, ChatType
+    from channels.base import ChannelConfig, ChannelAccountConfig, ChannelCapabilities, ChatType
     
     account_config = ChannelAccountConfig(
         account_id="test_account_123",
@@ -97,7 +97,7 @@ def mock_channel_config():
 @pytest.fixture
 def mock_channel_status():
     """模拟渠道状态"""
-    from agentbus.channels.base import ChannelStatus, ChannelState, ConnectionStatus
+    from channels.base import ChannelStatus, ChannelState, ConnectionStatus
     from datetime import datetime
     
     return ChannelStatus(
@@ -112,7 +112,7 @@ def mock_channel_status():
 @pytest.fixture
 def mock_channel_adapter(mock_channel_config, mock_channel_status):
     """模拟渠道适配器"""
-    from agentbus.channels.base import ChannelAdapter
+    from channels.base import ChannelAdapter
     
     adapter = MagicMock(spec=ChannelAdapter)
     adapter.channel_id = mock_channel_config.channel_id
@@ -159,7 +159,7 @@ class TestDataGenerator:
     @staticmethod
     def create_test_messages(count=5):
         """创建测试消息列表"""
-        from agentbus.channels.base import Message, MessageType, MessageMetadata, ChatType
+        from channels.base import Message, MessageType, MessageMetadata, ChatType
         from datetime import datetime
         
         messages = []
@@ -184,7 +184,7 @@ class TestDataGenerator:
     @staticmethod
     def create_test_channel_configs(count=3):
         """创建测试渠道配置列表"""
-        from agentbus.channels.base import ChannelConfig, ChannelAccountConfig, ChannelCapabilities, ChatType
+        from channels.base import ChannelConfig, ChannelAccountConfig, ChannelCapabilities, ChatType
         
         configs = []
         for i in range(count):

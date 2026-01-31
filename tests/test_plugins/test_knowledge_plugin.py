@@ -14,9 +14,9 @@ import logging
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
-from agentbus.plugins import PluginContext
-from agentbus.plugins.knowledge_plugin import KnowledgeBusPlugin
-from agentbus.services.knowledge_bus import (
+from plugins import PluginContext
+from plugins.knowledge_plugin import KnowledgeBusPlugin
+from services.knowledge_bus import (
     KnowledgeType, 
     KnowledgeSource, 
     KnowledgeStatus,

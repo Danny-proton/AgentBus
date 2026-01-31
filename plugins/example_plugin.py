@@ -6,7 +6,7 @@ AgentBus插件框架示例插件
 
 import asyncio
 from typing import Dict, Any
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 
 class ExamplePlugin(AgentBusPlugin):

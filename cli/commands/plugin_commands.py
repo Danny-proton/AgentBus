@@ -11,8 +11,8 @@ from typing import Dict, List, Optional, Any
 from pathlib import Path
 from loguru import logger
 
-from agentbus.plugins.manager import PluginManager, PluginInfo, PluginStatus
-from agentbus.plugins.core import PluginContext
+from plugins.manager import PluginManager, PluginInfo, PluginStatus
+from plugins.core import PluginContext
 
 
 class PluginCommands:

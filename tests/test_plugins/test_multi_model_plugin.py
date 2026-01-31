@@ -18,9 +18,9 @@ import logging
 from unittest.mock import AsyncMock, MagicMock, patch
 from typing import Dict, Any
 
-from agentbus.plugins import PluginContext, PluginManager
-from agentbus.plugins.multi_model_plugin import MultiModelPlugin
-from agentbus.services.multi_model_coordinator import (
+from plugins import PluginContext, PluginManager
+from plugins.multi_model_plugin import MultiModelPlugin
+from services.multi_model_coordinator import (
     ModelConfig, TaskRequest, TaskType, TaskPriority, ModelType
 )
 
@@ -266,7 +266,7 @@ class TestMultiModelPlugin:
         await plugin.activate()
         
         # 模拟任务结果
-        from agentbus.services.multi_model_coordinator import TaskResult, TaskStatus
+        from services.multi_model_coordinator import TaskResult, TaskStatus
         
         mock_result = TaskResult(
             task_id="test-task",

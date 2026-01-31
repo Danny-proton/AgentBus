@@ -36,7 +36,7 @@ def mock_logger():
 @pytest.fixture
 def plugin_context(mock_logger) -> "PluginContext":
     """创建插件上下文fixture"""
-    from agentbus.plugins.core import PluginContext
+    from plugins.core import PluginContext
     
     return PluginContext(
         config={"test_config": "test_value"},

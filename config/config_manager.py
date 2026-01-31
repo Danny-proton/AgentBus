@@ -797,7 +797,15 @@ class ConfigManager:
             # 保存快照文件
             snapshot_file = self.config_dir / "snapshots" / f"{name}.json"
             with open(snapshot_file, 'w', encoding='utf-8') as f:
-                f.write(snapshot.model_dump_json())
+                # 兼容 Pydantic v1 和 v2
+                if hasattr(snapshot, "model_dump_json"):
+                    f.write(snapshot.model_dump_json())
+                elif hasattr(snapshot, "json"):
+                    f.write(snapshot.json())
+                else:
+                    # 最后的回退方案
+                    import json as json_lib
+                    f.write(json_lib.dumps(snapshot.dict() if hasattr(snapshot, "dict") else snapshot.__dict__, indent=2))
             
             logger.debug(f"配置快照已创建: {name}")
             return True

@@ -8,11 +8,11 @@ from typing import Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, Depends, Query, BackgroundTasks
 from fastapi.responses import StreamingResponse
 
-from ..schemas.session import (
+from api.schemas.session import (
     SessionCreate, SessionResponse, SessionUpdate, 
     SessionList, SessionStats, SessionConfig
 )
-from ..schemas.message import StreamingChunk
+from api.schemas.message import StreamingChunk
 
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 

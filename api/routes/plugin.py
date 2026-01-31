@@ -7,8 +7,8 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List, Dict, Any, Optional
 import logging
 
-from ...core.dependencies import get_plugin_manager
-from ...plugins.manager import PluginManager, PluginInfo
+from core.dependencies import get_plugin_manager
+from plugins.manager import PluginManager, PluginInfo
 
 logger = logging.getLogger(__name__)
 

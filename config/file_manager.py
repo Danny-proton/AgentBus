@@ -574,7 +574,7 @@ class ConfigFileManager:
             errors.append(f"内容验证失败: {e}")
             return ValidationResult(False, errors, warnings, suggestions)
     
-    def create_template(self, 
+    def _create_template(self, 
                       name: str,
                       description: str,
                       scope: ConfigScope,
@@ -1333,15 +1333,7 @@ class ConfigFileManager:
             logger.error(f"创建模板失败 {template_name}: {e}")
             return False
     
-    def _create_template(self, 
-                      name: str,
-                      description: str,
-                      scope: ConfigScope,
-                      variables: Dict[str, Any],
-                      content: str,
-                      schema: Optional[Dict[str, Any]] = None,
-                      tags: Optional[List[str]] = None) -> bool:
-    
+
     def apply_template(self, template_name: str, output_file: str, variables: Dict[str, str] = None) -> bool:
         """应用配置模板"""
         try:

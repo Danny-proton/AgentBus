@@ -8,6 +8,13 @@ import logging
 import asyncio
 import pytest
 from typing import Generator
+import sys
+from pathlib import Path
+
+# Add project root to sys.path
+project_root = str(Path(__file__).parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +34,7 @@ def mock_logger():
 @pytest.fixture
 def plugin_context(mock_logger):
     """创建插件上下文fixture"""
-    from agentbus.plugins.core import PluginContext
+    from plugins.core import PluginContext
     
     return PluginContext(
         config={"test_config": "test_value"},

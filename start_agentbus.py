@@ -15,16 +15,17 @@ Examples:
 import asyncio
 import argparse
 import sys
+import os
 import logging
 from pathlib import Path
 
 # 添加当前目录到项目路径
 sys.path.insert(0, str(Path(__file__).parent))
 
-from agentbus.core.app import start_server, AgentBusServer
-from agentbus.core.main_app import AgentBusApplication
-from agentbus.config import get_settings, ConfigManager
-from py_moltbot.core.logger import get_logger
+from core.app import start_server, AgentBusServer
+from core.main_app import AgentBusApplication
+from config import get_settings, ConfigManager
+from agentbus_logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -37,12 +38,15 @@ async def main():
     # 初始化配置管理器
     try:
         config_manager = ConfigManager()
-        settings = await config_manager.load_config()
+        if config_manager.initialize():
+            settings = config_manager.get_settings()
+        else:
+            raise RuntimeError("ConfigManager initialization failed")
         logger.info(f"✅ 配置加载成功 - 环境: {os.getenv('APP_ENV', 'unknown')}")
     except Exception as e:
         logger.error(f"❌ 配置加载失败: {e}")
         logger.warning("使用默认配置继续启动...")
-        from agentbus.config import get_settings
+        from config import get_settings
         settings = get_settings()
     
     # 设置日志级别
@@ -50,9 +54,9 @@ async def main():
     logging.getLogger().setLevel(log_level)
     
     # 配置设置
-    settings.app.debug = args.debug
-    settings.app.host = args.host
-    settings.app.port = args.port
+    settings.debug = args.debug
+    settings.host = args.host
+    settings.port = args.port
     
     try:
         logger.info(f"🚀 启动AgentBus (模式: {args.mode})")
@@ -369,6 +373,18 @@ def print_banner():
     print(banner)
 
 
+import sys
+
 if __name__ == "__main__":
-    print_banner()
+    # Ensure stdout handles unicode
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+        
+    try:
+        print_banner()
+    except UnicodeEncodeError:
+        print("AgentBus Starting...")
+        
     asyncio.run(main())

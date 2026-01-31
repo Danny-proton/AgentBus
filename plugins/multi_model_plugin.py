@@ -32,8 +32,8 @@ from typing import Dict, List, Optional, Any, Union, Callable, Tuple
 from enum import Enum
 from dataclasses import asdict
 
-from agentbus.plugins import AgentBusPlugin, PluginContext, PluginTool, PluginHook
-from agentbus.services.multi_model_coordinator import (
+from plugins import AgentBusPlugin, PluginContext, PluginTool, PluginHook
+from services.multi_model_coordinator import (
     MultiModelCoordinator,
     ModelConfig,
     TaskRequest,
@@ -792,7 +792,7 @@ class MultiModelPlugin(AgentBusPlugin):
             
             # 使用协调器的方法准备提示词
             # 这里我们需要模拟一个模型配置
-            from agentbus.services.multi_model_coordinator import ModelConfig, ModelType
+            from services.multi_model_coordinator import ModelConfig, ModelType
             temp_model = ModelConfig(
                 model_id="temp",
                 model_name="Temp",

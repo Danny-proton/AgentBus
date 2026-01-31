@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 import uuid
 
-from ..schemas.multi_model_coordinator import (
+from api.schemas.multi_model_coordinator import (
     # 枚举类型
     ModelType, TaskType, TaskPriority, TaskStatus, FusionStrategy,
     # 数据模型
@@ -25,8 +25,8 @@ from ..schemas.multi_model_coordinator import (
     ModelListResponse, TaskListResponse,
     # 依赖注入
 )
-from ...core.dependencies import get_multi_model_coordinator
-from ...services.multi_model_coordinator import (
+from core.dependencies import get_multi_model_coordinator
+from services.multi_model_coordinator import (
     MultiModelCoordinator, ModelConfig, TaskRequest, TaskResult,
     TaskPriority as ServiceTaskPriority, TaskType as ServiceTaskType,
     TaskStatus as ServiceTaskStatus

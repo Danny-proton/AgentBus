@@ -16,7 +16,7 @@ from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 from loguru import logger
 
-from ..core.settings import settings
+from core.settings import settings
 
 
 class StreamEventType(Enum):
@@ -623,8 +623,8 @@ def create_stream_plugin_manager():
     
     用于插件系统集成，提供插件化的流式响应处理服务。
     """
-    from ..plugins.stream_plugin import StreamPlugin
-    from ..plugins.core import PluginContext
+    from plugins.stream_plugin import StreamPlugin
+    from plugins.core import PluginContext
     import logging
     
     # 创建默认上下文
@@ -655,8 +655,8 @@ async def initialize_stream_plugin(config=None):
     Returns:
         初始化的StreamPlugin实例
     """
-    from ..plugins.stream_plugin import StreamPlugin
-    from ..plugins.core import PluginContext
+    from plugins.stream_plugin import StreamPlugin
+    from plugins.core import PluginContext
     import logging
     
     logger = logging.getLogger(__name__)
@@ -716,8 +716,8 @@ def get_stream_plugin_info():
     Returns:
         插件信息字典
     """
-    from ..plugins.stream_plugin import StreamPlugin
-    from ..plugins.core import PluginContext
+    from plugins.stream_plugin import StreamPlugin
+    from plugins.core import PluginContext
     import logging
     
     logger = logging.getLogger(__name__)

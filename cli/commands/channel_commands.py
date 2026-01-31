@@ -11,8 +11,8 @@ from typing import Dict, List, Optional, Any
 from pathlib import Path
 from loguru import logger
 
-from agentbus.channels.manager import ChannelManager
-from agentbus.channels.base import (
+from channels.manager import ChannelManager
+from channels.base import (
     ChannelConfig, ChannelAccountConfig, MessageType, ChatType
 )
 

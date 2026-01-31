@@ -19,7 +19,10 @@ import os
 import sys
 import time
 import threading
-import resource
+try:
+    import resource
+except ImportError:
+    resource = None
 import tempfile
 import shutil
 import subprocess
@@ -461,6 +464,9 @@ class ExtensionSandbox(ExtensionSandboxInterface):
     
     def _set_resource_limits(self, limits: ResourceLimits):
         """设置系统资源限制"""
+        if resource is None:
+            return
+
         try:
             # 设置内存限制
             resource.setrlimit(resource.RLIMIT_AS, (limits.max_memory, limits.max_memory))
@@ -476,6 +482,9 @@ class ExtensionSandbox(ExtensionSandboxInterface):
     
     def _cleanup_resource_limits(self):
         """清理资源限制"""
+        if resource is None:
+            return
+
         try:
             # 恢复默认限制
             resource.setrlimit(resource.RLIMIT_AS, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))

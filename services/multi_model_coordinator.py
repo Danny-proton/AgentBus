@@ -15,10 +15,13 @@ from enum import Enum
 from dataclasses import dataclass, asdict
 from abc import ABC, abstractmethod
 from loguru import logger
+import openai
+from openai import AsyncOpenAI
 
 try:
-    from ..core.settings import settings
-except ImportError:
+    from core.settings import settings
+except ImportError as e:
+    print(f"Failed to import settings: {e}")
     # 如果没有配置模块，创建一个默认的settings
     class Settings:
         pass
@@ -183,21 +186,34 @@ class OpenAIProvider(ModelProvider):
         start_time = datetime.now()
         
         try:
-            # 这里应该实现实际的OpenAI API调用
-            # 为演示目的，返回模拟结果
-            await asyncio.sleep(0.1)  # 模拟API延迟
+            client = AsyncOpenAI(
+                api_key=config.api_key,
+                base_url=config.base_url
+            )
+            
+            messages = [{"role": "user", "content": prompt}]
+            
+            response = await client.chat.completions.create(
+                model=config.model_id,
+                messages=messages,
+                max_tokens=config.max_tokens,
+                temperature=config.temperature
+            )
+            
+            content = response.choices[0].message.content
             
             return ModelResult(
                 model_id=config.model_id,
-                content=f"[OpenAI Response] {prompt[:100]}...",
-                confidence=0.95,
+                content=content,
+                confidence=0.95, # OpenAI doesn't return confidence usually
                 processing_time=(datetime.now() - start_time).total_seconds(),
-                cost=config.cost_per_token * len(prompt) * 0.001,
-                tokens_used=len(prompt) // 4,
+                cost=config.cost_per_token * response.usage.total_tokens,
+                tokens_used=response.usage.total_tokens,
                 quality_score=config.quality_score
             )
             
         except Exception as e:
+            logger.error(f"OpenAI API error: {e}")
             return ModelResult(
                 model_id=config.model_id,
                 content="",
@@ -247,27 +263,42 @@ class AnthropicProvider(ModelProvider):
 
 
 class LocalProvider(ModelProvider):
-    """本地模型提供者"""
+    """本地模型提供者 (vLLM/Ollama compatible)"""
     
     async def generate(self, config: ModelConfig, prompt: str, **kwargs) -> ModelResult:
-        """本地模型调用"""
+        """本地模型调用 (通过OpenAI兼容接口)"""
         start_time = datetime.now()
         
         try:
-            # 模拟本地模型调用
-            await asyncio.sleep(0.2)
+            # 使用OpenAI客户端连接本地API
+            client = AsyncOpenAI(
+                api_key=config.api_key or "empty",
+                base_url=config.base_url
+            )
+            
+            messages = [{"role": "user", "content": prompt}]
+            
+            response = await client.chat.completions.create(
+                model=config.model_id,
+                messages=messages,
+                max_tokens=config.max_tokens,
+                temperature=config.temperature
+            )
+            
+            content = response.choices[0].message.content
             
             return ModelResult(
                 model_id=config.model_id,
-                content=f"[Local Response] {prompt[:100]}...",
-                confidence=0.85,
+                content=content,
+                confidence=0.90, # default confidence for local models
                 processing_time=(datetime.now() - start_time).total_seconds(),
-                cost=0.0,  # 本地模型无API成本
-                tokens_used=len(prompt) // 4,
+                cost=0.0,  # 本地模型假设无API成本
+                tokens_used=response.usage.total_tokens,
                 quality_score=config.quality_score
             )
             
         except Exception as e:
+            logger.error(f"Local model error: {e}")
             return ModelResult(
                 model_id=config.model_id,
                 content="",
@@ -278,7 +309,7 @@ class LocalProvider(ModelProvider):
     
     async def validate_config(self, config: ModelConfig) -> bool:
         """验证本地模型配置"""
-        return True  # 本地模型总是可用的
+        return bool(config.base_url)
 
 
 class MultiModelCoordinator:
@@ -322,6 +353,17 @@ class MultiModelCoordinator:
         """注册默认模型配置"""
         default_models = [
             ModelConfig(
+                model_id="glm-4-flash",
+                model_name="GLM-4-Flash",
+                model_type=ModelType.TEXT_GENERATION,
+                provider="openai",
+                api_key=settings.zhipu_api_key,
+                base_url=settings.zhipu_base_url,
+                capabilities=[TaskType.QUESTION_ANSWERING, TaskType.TEXT_GENERATION, TaskType.CREATIVE_WRITING],
+                cost_per_token=0.0000001, # Extremely cheap
+                quality_score=0.90
+            ),
+            ModelConfig(
                 model_id="gpt-4",
                 model_name="GPT-4",
                 model_type=ModelType.TEXT_GENERATION,
@@ -340,15 +382,20 @@ class MultiModelCoordinator:
                 quality_score=0.92
             ),
             ModelConfig(
-                model_id="local-llama",
-                model_name="Llama-2-7B",
+                model_id=getattr(settings, "local_model_id", "qwen3_32B"),
+                model_name=f"{getattr(settings, 'local_model_id', 'qwen3_32B')} (Local)",
                 model_type=ModelType.TEXT_GENERATION,
                 provider="local",
-                capabilities=[TaskType.QUESTION_ANSWERING, TaskType.TEXT_GENERATION],
+                base_url=getattr(settings, "local_model_base_url", "http://127.0.0.1:8030/v1"),
+                api_key=getattr(settings, "local_model_api_key", "empty"),
+                capabilities=[TaskType.QUESTION_ANSWERING, TaskType.TEXT_GENERATION, TaskType.CODE_GENERATION, TaskType.REASONING],
                 cost_per_token=0.0,
-                quality_score=0.75
+                quality_score=0.88,
+                max_tokens=8192
             )
+
         ]
+        
         
         for model in default_models:
             self.register_model(model)

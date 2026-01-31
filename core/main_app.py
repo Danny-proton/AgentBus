@@ -13,16 +13,19 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
-from ..plugins.manager import PluginManager
-from ..plugins.core import PluginContext
-from ..channels.manager import ChannelManager
-from ..services.hitl import HITLService
-from ..services.communication_map import CommunicationMap
-from ..services.message_channel import MessageChannel
-from ..services.knowledge_bus import KnowledgeBus
-from ..services.multi_model_coordinator import MultiModelCoordinator
-from ..services.stream_response import StreamResponseProcessor
-from ..core.settings import settings
+from plugins.manager import PluginManager
+from plugins.core import PluginContext
+from channels.manager import ChannelManager
+from services.hitl import HITLService
+from services.communication_map import CommunicationMap
+from services.message_channel import MessageChannel
+from services.knowledge_bus import KnowledgeBus
+from services.multi_model_coordinator import MultiModelCoordinator
+from services.stream_response import StreamResponseProcessor
+from gateway import GatewayServer, GatewayConfig
+from media_understanding import MediaUnderstandingSystem
+from auto_reply import ReplyStrategyManager
+from core.settings import settings
 
 
 class AgentBusApplication:
@@ -68,6 +71,9 @@ class AgentBusApplication:
         self.knowledge_bus: Optional[KnowledgeBus] = None
         self.multi_model_coordinator: Optional[MultiModelCoordinator] = None
         self.stream_response_processor: Optional[StreamResponseProcessor] = None
+        self.gateway_server: Optional[GatewayServer] = None
+        self.media_understanding: Optional[MediaUnderstandingSystem] = None
+        self.auto_reply_manager: Optional[ReplyStrategyManager] = None
         
         # 配置
         self.plugin_dirs = plugin_dirs
@@ -237,6 +243,27 @@ class AgentBusApplication:
             self.stream_response_processor = StreamResponseProcessor()
             await self.stream_response_processor.initialize()
             
+            # 7. 网关服务器
+            self.logger.info("初始化网关服务器")
+            gateway_config = GatewayConfig(
+                host="0.0.0.0",
+                port=18789,
+                auth_token=settings.api_key if hasattr(settings, "api_key") else None
+            )
+            self.gateway_server = GatewayServer(gateway_config)
+            await self.gateway_server.start()
+            
+            # 8. 媒体理解系统
+            self.logger.info("初始化媒体理解系统")
+            self.media_understanding = MediaUnderstandingSystem()
+            # 注意: MediaUnderstandingSystem 可能没有异步 start 方法，视具体实现而定
+            # 如果有则调用 await self.media_understanding.start()
+
+            # 9. 自动回复管理器
+            self.logger.info("初始化自动回复管理器")
+            self.auto_reply_manager = ReplyStrategyManager()
+            # 自动回复通常是按需调用的，可能不需要显式 start，如有需要可添加
+            
             self.logger.info("✅ 核心服务初始化完成")
             
         except Exception as e:
@@ -273,6 +300,9 @@ class AgentBusApplication:
                 "knowledge_bus": self.knowledge_bus is not None,
                 "multi_model_coordinator": self.multi_model_coordinator is not None,
                 "stream_response_processor": self.stream_response_processor is not None,
+                "gateway_server": self.gateway_server is not None,
+                "media_understanding": self.media_understanding is not None,
+                "auto_reply_manager": self.auto_reply_manager is not None,
             },
             "timestamp": asyncio.get_event_loop().time()
         }
@@ -379,6 +409,9 @@ class AgentBusApplication:
             ("知识总线", self.knowledge_bus, "shutdown"),
             ("多模型协调器", self.multi_model_coordinator, "shutdown"),
             ("流式响应处理器", self.stream_response_processor, "shutdown"),
+            ("网关服务器", self.gateway_server, "stop"),
+            ("媒体理解系统", self.media_understanding, "shutdown"),
+            ("自动回复管理器", self.auto_reply_manager, "shutdown"), # 如果有shutdown方法
         ]
         
         for service_name, service_instance, method_name in services:
@@ -400,6 +433,9 @@ class AgentBusApplication:
         self.knowledge_bus = None
         self.multi_model_coordinator = None
         self.stream_response_processor = None
+        self.gateway_server = None
+        self.media_understanding = None
+        self.auto_reply_manager = None
         
         self.logger.info("✅ 核心服务已关闭")
     

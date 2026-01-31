@@ -13,13 +13,13 @@ from .routes import (
     tool_router, config_router, hitl_router, knowledge_bus_router,
     multi_model_coordinator_router, stream_response_router
 )
-from ..core.dependencies import (
+from core.dependencies import (
     startup_event, shutdown_event, 
     get_plugin_manager, get_channel_manager,
     check_services_health
 )
-from ..plugins.manager import PluginManager
-from ..channels.manager import ChannelManager
+from plugins.manager import PluginManager
+from channels.manager import ChannelManager
 import logging
 logger = logging.getLogger(__name__)
 
@@ -85,21 +85,43 @@ def create_app() -> FastAPI:
             "docs": "/docs",
             "health": "/health",
             "api_prefix": "/api",
+            "ui": "/ui",
             "management": "/management"
         }
     
+    # Manus-like UI 路由
+    @app.get("/ui")
+    async def manus_ui():
+        """新版 Manus 风格界面"""
+        from fastapi.responses import FileResponse
+        import os
+        index_path = os.path.join("frontend", "dist", "index.html")
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        else:
+            return JSONResponse(
+                status_code=404,
+                content={"error": "Frontend not built", "message": "请先运行 npm run build"}
+            )
+    
+    # 挂载前端静态文件
+    from fastapi.staticfiles import StaticFiles
+    import os
+    if os.path.exists(os.path.join("frontend", "dist")):
+        app.mount("/assets", StaticFiles(directory=os.path.join("frontend", "dist", "assets")), name="assets")
+
     # 管理界面端点
     @app.get("/management")
     async def management_ui():
         """Web管理界面"""
-        from ..web.management import MANAGEMENT_HTML
+        from web.management import MANAGEMENT_HTML
         from fastapi.responses import HTMLResponse
         return HTMLResponse(content=MANAGEMENT_HTML)
     
     @app.get("/management.js")
     async def management_js():
         """管理界面JavaScript"""
-        from ..web.management import JS_API_CLIENT
+        from web.management import JS_API_CLIENT
         from fastapi.responses import Response
         return Response(
             content=JS_API_CLIENT,

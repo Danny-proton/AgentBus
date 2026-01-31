@@ -14,7 +14,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from loguru import logger
 
-from ..core.settings import settings
+from core.settings import settings
 
 
 @dataclass

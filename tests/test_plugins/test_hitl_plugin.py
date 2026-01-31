@@ -17,9 +17,9 @@ from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime
 from typing import Dict, Any
 
-from agentbus.plugins import PluginContext, PluginManager
-from agentbus.plugins.hitl_plugin import HITLPlugin
-from agentbus.services.hitl import (
+from plugins import PluginContext, PluginManager
+from plugins.hitl_plugin import HITLPlugin
+from services.hitl import (
     HITLRequest, HITLResponse, HITLStatus, HITLPriority
 )
 

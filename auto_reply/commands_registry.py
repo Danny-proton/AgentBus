@@ -286,7 +286,7 @@ class CommandRegistry:
                 else:
                     patterns.append(f"{escaped}(?:\\s*:\\s*)?")
         
-        regex = re.compile(f"^(?:{"|".join(patterns)})$", re.IGNORECASE) if patterns else re.compile(r"$^")
+        regex = re.compile(f"^(?:{'|'.join(patterns)})$", re.IGNORECASE) if patterns else re.compile(r"$^")
         
         self._cached_detection = CommandDetection(exact=exact, regex=regex)
         return self._cached_detection
@@ -353,7 +353,7 @@ def normalize_command_body(raw: str, options: Optional[CommandNormalizeOptions] 
     if normalized_bot_username:
         mention_match = single_line.match(r"^/([^\s@]+)@([^\s]+)(.*)$/")
         if mention_match and mention_match[2].lower() == normalized_bot_username:
-            return f"/{mention_match[1]}{mention_match[3] or ""}"
+            return f"/{mention_match[1]}{mention_match[3] or ''}"
     
     # 查找匹配的命令
     detection = _registry.build_detection()

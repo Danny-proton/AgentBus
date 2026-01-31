@@ -11,8 +11,8 @@ from .env_loader import EnvironmentLoader
 from .settings import ExtendedSettings
 from .security import ConfigEncryption, ConfigValidator
 from .watcher import ConfigWatcher
-from .backup_manager import BackupManager
-from .file_manager import FileManager
+from .backup_manager import ConfigBackupManager as BackupManager
+from .file_manager import ConfigFileManager as FileManager
 from .config_types import (
     EnvironmentType,
     ConfigProfile,

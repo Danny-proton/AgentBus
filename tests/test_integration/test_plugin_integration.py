@@ -31,8 +31,8 @@ from pathlib import Path
 from typing import Dict, Any, List
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
 
-from agentbus.plugins.manager import PluginManager
-from agentbus.plugins.core import PluginContext, AgentBusPlugin, PluginStatus, PluginResult
+from plugins.manager import PluginManager
+from plugins.core import PluginContext, AgentBusPlugin, PluginStatus, PluginResult
 
 
 class TestPluginSystemIntegration:
@@ -93,7 +93,7 @@ class TestPluginSystemIntegration:
         with open(plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
 import asyncio
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class LifecycleTestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -223,7 +223,7 @@ class LifecycleTestPlugin(AgentBusPlugin):
         base_plugin_file = os.path.join(plugin_manager._plugin_dirs[0], "base_plugin.py")
         with open(base_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class BasePlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -257,7 +257,7 @@ class BasePlugin(AgentBusPlugin):
         dependent_plugin_file = os.path.join(plugin_manager._plugin_dirs[0], "dependent_plugin.py")
         with open(dependent_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class DependentPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -303,7 +303,7 @@ class DependentPlugin(AgentBusPlugin):
         circular_plugin_file = os.path.join(plugin_manager._plugin_dirs[0], "circular_plugin.py")
         with open(circular_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class CircularPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -424,7 +424,7 @@ class CircularPlugin(AgentBusPlugin):
         sender_plugin_file = os.path.join(plugin_manager._plugin_dirs[0], "sender_plugin.py")
         with open(sender_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class SenderPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -480,7 +480,7 @@ class SenderPlugin(AgentBusPlugin):
         with open(receiver_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
 import time
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class ReceiverPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -530,7 +530,7 @@ class ReceiverPlugin(AgentBusPlugin):
         with open(broadcaster_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
 import time
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class BroadcasterPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):

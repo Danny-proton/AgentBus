@@ -18,17 +18,17 @@ from loguru import logger
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from agentbus.cli.commands import (
+from cli.commands import (
     PluginCommands, ChannelCommands, ConfigCommands,
     BrowserCommands, SchedulerCommands, AdvancedCommandParser, CommandRegistry
 )
 
-from agentbus.plugins.manager import PluginManager
-from agentbus.channels.manager import ChannelManager
-from agentbus.config.config_manager import ConfigManager
-from agentbus.automation.browser import BrowserAutomation
-from agentbus.scheduler.task_manager import TaskManager
-from agentbus.scheduler.cron_handler import CronHandler
+from plugins.manager import PluginManager
+from channels.manager import ChannelManager
+from config.config_manager import ConfigManager
+from automation.browser import BrowserAutomation
+from scheduler.task_manager import TaskManager
+from scheduler.cron_handler import CronHandler
 
 
 class AgentBusCLI:
@@ -165,11 +165,11 @@ def main(ctx, config_dir, verbose, debug):
 
 
 # 导入所有命令组
-from agentbus.cli.commands.plugin_commands import plugin
-from agentbus.cli.commands.channel_commands import channel
-from agentbus.cli.commands.config_commands import config
-from agentbus.cli.commands.browser_commands import browser
-from agentbus.cli.commands.scheduler_commands import scheduler
+from cli.commands.plugin_commands import plugin
+from cli.commands.channel_commands import channel
+from cli.commands.config_commands import config
+from cli.commands.browser_commands import browser
+from cli.commands.scheduler_commands import scheduler
 
 # 注册所有命令组
 main.add_command(plugin, name='plugin')

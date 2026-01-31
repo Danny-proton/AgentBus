@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional, AsyncGenerator
 from fastapi import APIRouter, HTTPException, Depends, Query, BackgroundTasks
 from fastapi.responses import StreamingResponse
 
-from ..schemas.message import (
+from api.schemas.message import (
     MessageRequest, MessageResponse, HumanRequest, HumanResponse, StreamingChunk
 )
 

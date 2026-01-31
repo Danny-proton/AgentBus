@@ -5,9 +5,9 @@ Configuration Types for AgentBus
 
 from enum import Enum
 from typing import Dict, List, Optional, Any, Union, Callable, Literal
-from dataclasses import dataclass
 from pathlib import Path
 import json as json_module
+from pydantic import BaseModel, Field, ConfigDict
 
 EnvironmentType = Literal["development", "testing", "staging", "production"]
 
@@ -19,6 +19,7 @@ class ConfigSource(Enum):
     FILE = "file"
     DATABASE = "database"
     REMOTE = "remote"
+    MANUAL = "manual"
 
 
 class ConfigEvent(Enum):
@@ -32,8 +33,7 @@ class ConfigEvent(Enum):
     WATCH_STOPPED = "watch_stopped"
 
 
-@dataclass
-class ConfigProfile:
+class ConfigProfile(BaseModel):
     """配置文件定义"""
     name: str
     environment: EnvironmentType
@@ -41,15 +41,12 @@ class ConfigProfile:
     env_prefix: str = "AGENTBUS"
     priority: int = 1
     enabled: bool = True
-    variables: Dict[str, Any] = None
+    variables: Dict[str, Any] = Field(default_factory=dict)
     
-    def __post_init__(self):
-        if self.variables is None:
-            self.variables = {}
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-@dataclass
-class ConfigSection:
+class ConfigSection(BaseModel):
     """配置节定义"""
     name: str
     source: ConfigSource
@@ -58,36 +55,29 @@ class ConfigSection:
     schema: Optional[Dict[str, Any]] = None
     validation_rules: Optional[Dict[str, Any]] = None
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-@dataclass
-class ValidationResult:
+
+class ValidationResult(BaseModel):
     """配置验证结果"""
     is_valid: bool
-    errors: List[str]
-    warnings: List[str]
-    suggestions: List[str]
-    
-    def __post_init__(self):
-        if self.errors is None:
-            self.errors = []
-        if self.warnings is None:
-            self.warnings = []
-        if self.suggestions is None:
-            self.suggestions = []
+    errors: List[str] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+    suggestions: List[str] = Field(default_factory=list)
 
 
-@dataclass
-class WatchEvent:
+class WatchEvent(BaseModel):
     """配置监听事件"""
     event_type: ConfigEvent
     path: Path
     timestamp: float
     data: Optional[Dict[str, Any]] = None
-    error: Optional[Exception] = None
+    error: Optional[Any] = None # Exception is not pydantic serializable easily, stick to Any
+    
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-@dataclass
-class EncryptedConfig:
+class EncryptedConfig(BaseModel):
     """加密配置数据"""
     encrypted_data: str
     checksum: str
@@ -96,8 +86,7 @@ class EncryptedConfig:
     timestamp: float
 
 
-@dataclass
-class ConfigSnapshot:
+class ConfigSnapshot(BaseModel):
     """配置快照"""
     id: str
     timestamp: float
@@ -105,11 +94,7 @@ class ConfigSnapshot:
     profile: str
     data: Dict[str, Any]
     checksum: str
-    metadata: Dict[str, Any] = None
-    
-    def __post_init__(self):
-        if self.metadata is None:
-            self.metadata = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class ConfigFormat(Enum):
@@ -118,6 +103,8 @@ class ConfigFormat(Enum):
     JSON = "json"
     TOML = "toml"
     ENV = "env"
+    ZIP = "zip"
+    TAR = "tar"
 
 
 class ConfigScope(Enum):
@@ -128,40 +115,33 @@ class ConfigScope(Enum):
     COMPONENT = "component"
 
 
-@dataclass
-class ConfigSchema:
+class ConfigSchema(BaseModel):
     """配置模式定义"""
     name: str
     version: str
-    schema: Dict[str, Any]
-    required: List[str] = None
-    defaults: Dict[str, Any] = None
-    validators: Dict[str, Callable] = None
+    schema_: Dict[str, Any] = Field(alias="schema") # schema is protected
+    required: List[str] = Field(default_factory=list)
+    defaults: Dict[str, Any] = Field(default_factory=dict)
+    validators: Dict[str, Callable] = Field(default_factory=dict)
     
-    def __post_init__(self):
-        if self.required is None:
-            self.required = []
-        if self.defaults is None:
-            self.defaults = {}
-        if self.validators is None:
-            self.validators = {}
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
 
-@dataclass
-class ConfigHistory:
+class ConfigHistory(BaseModel):
     """配置历史记录"""
     id: str
     timestamp: float
     action: Literal["created", "updated", "deleted", "restored"]
     path: Path
-    old_data: Optional[Dict[str, Any]]
-    new_data: Optional[Dict[str, Any]]
+    old_data: Optional[Dict[str, Any]] = None
+    new_data: Optional[Dict[str, Any]] = None
     user: Optional[str] = None
     reason: Optional[str] = None
+    
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-@dataclass
-class ConfigChange:
+class ConfigChange(BaseModel):
     """配置变更记录"""
     timestamp: float
     path: Path
@@ -169,11 +149,9 @@ class ConfigChange:
     old_value: Any
     new_value: Any
     source: ConfigSource
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
     
-    def __post_init__(self):
-        if self.metadata is None:
-            self.metadata = {}
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 # 配置回调函数类型

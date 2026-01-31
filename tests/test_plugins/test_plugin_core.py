@@ -23,7 +23,7 @@ import logging
 from typing import Dict, Any, List
 from unittest.mock import Mock, patch, AsyncMock
 
-from agentbus.plugins.core import (
+from plugins.core import (
     PluginContext,
     AgentBusPlugin, 
     PluginTool,

@@ -30,14 +30,14 @@ from typing import Dict, Any, List
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
 
 # AgentBus 核心组件 - 部分注释掉因为文件不存在
-# from agentbus.core.context import AgentBusContext
-from agentbus.plugins.manager import PluginManager
-# from agentbus.plugins.core import PluginContext, AgentBusPlugin, PluginStatus
-from agentbus.channels.manager import ChannelManager
-from agentbus.services.hitl import HITLService, HITLPriority
-from agentbus.services.knowledge_bus import KnowledgeBus, KnowledgeType, KnowledgeSource
-from agentbus.services.multi_model_coordinator import MultiModelCoordinator, ModelType
-# from agentbus.cli import AgentBusCLI
+# from core.context import AgentBusContext
+from plugins.manager import PluginManager
+# from plugins.core import PluginContext, AgentBusPlugin, PluginStatus
+from channels.manager import ChannelManager
+from services.hitl import HITLService, HITLPriority
+from services.knowledge_bus import KnowledgeBus, KnowledgeType, KnowledgeSource
+from services.multi_model_coordinator import MultiModelCoordinator, ModelType
+# from cli import AgentBusCLI
 
 
 class TestCompleteSystemIntegration:
@@ -207,7 +207,7 @@ class TestCompleteSystemIntegration:
         with open(data_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
 import asyncio
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class DataProcessorPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -250,7 +250,7 @@ class DataProcessorPlugin(AgentBusPlugin):
         hitl_plugin_file = os.path.join(plugin_dir, "hitl_enhancer.py")
         with open(hitl_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class HITLEnhancerPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -434,7 +434,7 @@ class HITLEnhancerPlugin(AgentBusPlugin):
         
         with open(message_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class MessageHandlerPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -517,7 +517,7 @@ class MessageHandlerPlugin(AgentBusPlugin):
         
         with open(model_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class ModelCoordinatorPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -605,7 +605,7 @@ class ModelCoordinatorPlugin(AgentBusPlugin):
         with open(workflow_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
 import asyncio
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class WorkflowOrchestratorPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -749,7 +749,7 @@ class WorkflowOrchestratorPlugin(AgentBusPlugin):
         
         with open(perf_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class PerformanceTestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -851,7 +851,7 @@ class PerformanceTestPlugin(AgentBusPlugin):
         
         with open(error_plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class ErrorHandlerPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -1056,7 +1056,7 @@ class TestSystemIntegrationSuite:
             test_plugin_file = os.path.join(config["agentbus"]["plugins_dir"], "integration_test.py")
             with open(test_plugin_file, 'w', encoding='utf-8') as f:
                 f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class IntegrationTestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):

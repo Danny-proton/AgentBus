@@ -66,6 +66,11 @@ def list_channel_adapters() -> List[ChannelAdapter]:
     return channel_registry.list_adapters()
 
 
+# 导入渠道实现以触发注册
+from . import example
+from . import test_channel
+
+
 # 导入常用枚举和类型
 from .base import (
     MessageType,

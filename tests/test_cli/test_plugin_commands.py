@@ -12,12 +12,12 @@ from pathlib import Path
 import tempfile
 import yaml
 
-from agentbus.cli.commands.plugin_commands import (
+from cli.commands.plugin_commands import (
     PluginCommands, create_plugin_commands, 
     list, enable, disable, reload, unload, info, export, import_config, stats
 )
-from agentbus.plugins.manager import PluginManager, PluginInfo, PluginStatus
-from agentbus.plugins.core import PluginContext
+from plugins.manager import PluginManager, PluginInfo, PluginStatus
+from plugins.core import PluginContext
 
 
 class TestPluginCommands:
@@ -278,7 +278,7 @@ class TestPluginCommands:
                 "status_summary": {"active": 1, "inactive": 1}
             }
         
-        with patch('agentbus.cli.commands.plugin_commands.PluginCommands.list_plugins', mock_list):
+        with patch('cli.commands.plugin_commands.PluginCommands.list_plugins', mock_list):
             result = runner.invoke(list, [], obj=ctx)
             
             assert result.exit_code == 0
@@ -299,7 +299,7 @@ class TestPluginCommands:
                 "plugin_id": "test_plugin_1"
             }
         
-        with patch('agentbus.cli.commands.plugin_commands.PluginCommands.enable_plugin', mock_enable):
+        with patch('cli.commands.plugin_commands.PluginCommands.enable_plugin', mock_enable):
             result = runner.invoke(enable, ['test_plugin_1'], obj=ctx)
             
             assert result.exit_code == 0
@@ -319,7 +319,7 @@ class TestPluginCommands:
                 "plugin_id": "test_plugin_1"
             }
         
-        with patch('agentbus.cli.commands.plugin_commands.PluginCommands.disable_plugin', mock_disable):
+        with patch('cli.commands.plugin_commands.PluginCommands.disable_plugin', mock_disable):
             result = runner.invoke(disable, ['test_plugin_1'], obj=ctx)
             
             assert result.exit_code == 0

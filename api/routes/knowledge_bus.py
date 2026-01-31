@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
-from ..schemas.knowledge_bus import (
+from api.schemas.knowledge_bus import (
     KnowledgeCreate,
     KnowledgeResponse,
     KnowledgeUpdate,
@@ -24,8 +24,8 @@ from ..schemas.knowledge_bus import (
     KnowledgeValidationRequest,
     KnowledgeAnalytics
 )
-from ...services.knowledge_bus import KnowledgeBus, KnowledgeType, KnowledgeSource, KnowledgeStatus
-from ...core.dependencies import get_knowledge_bus
+from services.knowledge_bus import KnowledgeBus, KnowledgeType, KnowledgeSource, KnowledgeStatus
+from core.dependencies import get_knowledge_bus
 
 router = APIRouter(prefix="/knowledge", tags=["Knowledge Bus - 知识总线"])
 

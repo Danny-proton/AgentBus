@@ -17,7 +17,7 @@ from datetime import datetime
 import aiohttp
 from urllib.parse import urljoin
 
-from ..plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
+from plugins.core import AgentBusPlugin, PluginContext, PluginTool, PluginHook
 
 
 class DiscordChannelPlugin(AgentBusPlugin):

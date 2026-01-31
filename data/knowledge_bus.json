@@ -60,9 +60,9 @@
       "updated_at": "2026-01-29T12:24:45.919381",
       "created_by": "expert",
       "tags": [
-        "请求",
+        "HITL",
         "最佳实践",
-        "HITL"
+        "请求"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -134,9 +134,9 @@
       "updated_at": "2026-01-29T12:25:05.286634",
       "created_by": "expert",
       "tags": [
-        "请求",
+        "HITL",
         "最佳实践",
-        "HITL"
+        "请求"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -157,9 +157,9 @@
       "updated_at": "2026-01-29T12:25:05.308310",
       "created_by": "ai_agent",
       "tags": [
+        "知识总线",
         "搜索",
-        "索引",
-        "知识总线"
+        "索引"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -178,8 +178,8 @@
       "created_by": "user",
       "tags": [
         "HITL",
-        "人工智能",
-        "协作"
+        "协作",
+        "人工智能"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -221,9 +221,9 @@
       "updated_at": "2026-01-29T12:29:45.275086",
       "created_by": "system",
       "tags": [
-        "请求创建",
+        "HITL",
         "最佳实践",
-        "HITL"
+        "请求创建"
       ],
       "confidence": 0.9,
       "usage_count": 0,
@@ -241,9 +241,9 @@
       "updated_at": "2026-01-29T12:29:45.275173",
       "created_by": "system",
       "tags": [
+        "紧急处理",
         "HITL",
-        "优先级",
-        "紧急处理"
+        "优先级"
       ],
       "confidence": 0.8,
       "usage_count": 0,
@@ -261,9 +261,9 @@
       "updated_at": "2026-01-29T12:29:45.275583",
       "created_by": "expert_developer",
       "tags": [
+        "HITL",
         "API",
         "依赖注入",
-        "HITL",
         "修复"
       ],
       "confidence": 0.95,
@@ -646,5 +646,5 @@
     "total_usage": 0,
     "average_confidence": 0.0
   },
-  "last_updated": "2026-01-29T13:32:16.764777"
+  "last_updated": "2026-01-31T10:50:12.078845"
 }

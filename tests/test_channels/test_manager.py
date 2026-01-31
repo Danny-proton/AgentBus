@@ -21,8 +21,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import uuid
 
-from agentbus.channels.manager import ChannelManager
-from agentbus.channels.base import (
+from channels.manager import ChannelManager
+from channels.base import (
     ChannelAdapter,
     ChannelConfig,
     ChannelAccountConfig,
@@ -42,7 +42,7 @@ from agentbus.channels.base import (
 def setup_test_factory():
     """自动设置测试工厂函数"""
     # 注册测试工厂函数
-    from agentbus.channels import channel_registry
+    from channels import channel_registry
     
     def test_factory(config):
         return MockChannelAdapter(config)

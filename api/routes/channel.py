@@ -8,9 +8,9 @@ from typing import List, Dict, Any, Optional
 import logging
 from pathlib import Path
 
-from ...core.dependencies import get_channel_manager
-from ...channels.manager import ChannelManager
-from ...channels.base import ChannelConfig
+from core.dependencies import get_channel_manager
+from channels.manager import ChannelManager
+from channels.base import ChannelConfig
 
 logger = logging.getLogger(__name__)
 

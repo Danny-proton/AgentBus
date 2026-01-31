@@ -20,7 +20,7 @@ from loguru import logger
 
 from .communication_map import CommunicationMap
 from .message_channel import MessageChannel
-from ..core.settings import settings
+from core.settings import settings
 
 
 class HITLStatus(Enum):

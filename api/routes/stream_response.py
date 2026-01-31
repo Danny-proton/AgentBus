@@ -16,7 +16,7 @@ import asyncio
 import json
 import uuid
 
-from ..schemas.stream_response import (
+from api.schemas.stream_response import (
     # 枚举类型
     StreamEventType, StreamStatus, StreamHandlerType,
     # 数据模型
@@ -29,8 +29,8 @@ from ..schemas.stream_response import (
     StreamPerformanceMetrics, StreamAnalytics,
     # 依赖注入
 )
-from ...core.dependencies import get_stream_response_processor
-from ...services.stream_response import (
+from core.dependencies import get_stream_response_processor
+from services.stream_response import (
     StreamResponseProcessor, StreamRequest, StreamChunk as ServiceStreamChunk,
     StreamEventType as ServiceStreamEventType, StreamStatus as ServiceStreamStatus
 )

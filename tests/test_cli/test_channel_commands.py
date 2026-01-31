@@ -12,13 +12,13 @@ from pathlib import Path
 import tempfile
 import yaml
 
-from agentbus.cli.commands.channel_commands import (
+from cli.commands.channel_commands import (
     ChannelCommands, create_channel_commands,
     list, add, remove, connect, disconnect, status, send, info,
     connect_all, disconnect_all, export, import_config, stats
 )
-from agentbus.channels.manager import ChannelManager
-from agentbus.channels.base import (
+from channels.manager import ChannelManager
+from channels.base import (
     ChannelConfig, ChannelAccountConfig, MessageType, ChatType, 
     ChannelStatus, ConnectionStatus, ChannelState
 )
@@ -101,7 +101,7 @@ class TestChannelCommands:
         }
         
         # 模拟ChannelConfig.from_dict
-        with patch('agentbus.cli.commands.channel_commands.ChannelConfig.from_dict') as mock_from_dict:
+        with patch('cli.commands.channel_commands.ChannelConfig.from_dict') as mock_from_dict:
             mock_config = Mock()
             mock_config.channel_id = "new_channel"
             mock_from_dict.return_value = mock_config
@@ -273,7 +273,7 @@ class TestChannelCommands:
             mock_channel_manager.register_channel = AsyncMock(return_value=True)
             
             # 模拟ChannelConfig.from_dict
-            with patch('agentbus.cli.commands.channel_commands.ChannelConfig.from_dict') as mock_from_dict:
+            with patch('cli.commands.channel_commands.ChannelConfig.from_dict') as mock_from_dict:
                 mock_config = Mock()
                 mock_config.channel_id = "imported_channel"
                 mock_from_dict.return_value = mock_config
@@ -333,7 +333,7 @@ class TestChannelCommands:
                 "statistics": {"connected": 1, "disconnected": 1}
             }
         
-        with patch('agentbus.cli.commands.channel_commands.ChannelCommands.list_channels', mock_list):
+        with patch('cli.commands.channel_commands.ChannelCommands.list_channels', mock_list):
             result = runner.invoke(list, [], obj=ctx)
             
             assert result.exit_code == 0
@@ -355,7 +355,7 @@ class TestChannelCommands:
                 "account_id": "default_account"
             }
         
-        with patch('agentbus.cli.commands.channel_commands.ChannelCommands.connect_channel', mock_connect):
+        with patch('cli.commands.channel_commands.ChannelCommands.connect_channel', mock_connect):
             result = runner.invoke(connect, ['test_channel_1', '--account', 'default_account'], obj=ctx)
             
             assert result.exit_code == 0
@@ -375,7 +375,7 @@ class TestChannelCommands:
                 "channel_id": "test_channel_1"
             }
         
-        with patch('agentbus.cli.commands.channel_commands.ChannelCommands.send_message_to_channel', mock_send):
+        with patch('cli.commands.channel_commands.ChannelCommands.send_message_to_channel', mock_send):
             result = runner.invoke(send, ['test_channel_1', 'Hello, world!'], obj=ctx)
             
             assert result.exit_code == 0

@@ -36,11 +36,11 @@ from unittest.mock import Mock, patch, AsyncMock, MagicMock
 from io import StringIO
 
 # CLI相关模块 - 部分注释掉因为文件不存在
-# from agentbus.cli import AgentBusCLI
-# from agentbus.core.context import AgentBusContext
-from agentbus.plugins.manager import PluginManager
-# from agentbus.plugins.core import PluginContext
-from agentbus.channels.manager import ChannelManager
+# from cli import AgentBusCLI
+# from core.context import AgentBusContext
+from plugins.manager import PluginManager
+# from plugins.core import PluginContext
+from channels.manager import ChannelManager
 
 
 class TestCLIIntegration:
@@ -179,7 +179,7 @@ class TestCLIIntegration:
         plugin_file = os.path.join(cli_config["directories"]["plugins"], "test_plugin.py")
         with open(plugin_file, 'w', encoding='utf-8') as f:
             f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class TestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):
@@ -546,7 +546,7 @@ class TestCLIIntegrationSuite:
             plugin_file = os.path.join(plugins_dir, "suite_test.py")
             with open(plugin_file, 'w', encoding='utf-8') as f:
                 f.write('''
-from agentbus.plugins import AgentBusPlugin, PluginContext
+from plugins import AgentBusPlugin, PluginContext
 
 class SuiteTestPlugin(AgentBusPlugin):
     def __init__(self, plugin_id, context):

@@ -11,10 +11,10 @@ from unittest.mock import Mock, AsyncMock, patch
 
 # 导入要测试的插件
 try:
-    from agentbus.plugins.telegram_channel_plugin import TelegramChannelPlugin
-    from agentbus.plugins.discord_channel_plugin import DiscordChannelPlugin
-    from agentbus.plugins.example_skill import ExampleSkillPlugin
-    from agentbus.plugins.core import PluginContext
+    from plugins.telegram_channel_plugin import TelegramChannelPlugin
+    from plugins.discord_channel_plugin import DiscordChannelPlugin
+    from plugins.example_skill import ExampleSkillPlugin
+    from plugins.core import PluginContext
 except ImportError as e:
     pytest.skip(f"无法导入插件: {e}", allow_module_level=True)
 

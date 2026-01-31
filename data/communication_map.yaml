@@ -7,9 +7,9 @@ contacts:
   - type: phone
     value: +86-138-0000-0000
   expertise:
+  - troubleshooting
   - system
   - infrastructure
-  - troubleshooting
   id: admin
   language: zh-CN
   last_active: null
@@ -27,10 +27,10 @@ contacts:
   - type: slack
     value: '@tech_lead'
   expertise:
-  - development
-  - architecture
   - review
   - code_quality
+  - architecture
+  - development
   id: tech_lead
   language: zh-CN
   last_active: null
@@ -48,10 +48,10 @@ contacts:
   - type: teams
     value: data.scientist
   expertise:
-  - data_analysis
   - statistics
-  - machine_learning
+  - data_analysis
   - python
+  - machine_learning
   id: data_scientist
   language: zh-CN
   last_active: null
@@ -61,4 +61,4 @@ contacts:
   role: data_scientist
   tags: []
   timezone: Asia/Shanghai
-last_updated: '2026-01-29T12:25:35.530431'
+last_updated: '2026-01-31T10:38:56.178062'

@@ -13,9 +13,9 @@ import uuid
 from pydantic import BaseModel, Field
 import asyncio
 
-from ..core.dependencies import get_memory_service, get_user_service
-from ..core.auth import verify_api_key, verify_user_permissions
-from ..core.models import Memory
+from core.dependencies import get_memory_service, get_user_service
+from core.auth import verify_api_key, verify_user_permissions
+from core.models import Memory
 
 logger = logging.getLogger(__name__)
 security = HTTPBearer()

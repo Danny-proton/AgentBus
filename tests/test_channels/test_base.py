@@ -16,7 +16,7 @@ from datetime import datetime
 import json
 import uuid
 
-from agentbus.channels.base import (
+from channels.base import (
     MessageType,
     ChatType, 
     ConnectionStatus,
@@ -643,7 +643,7 @@ class TestChannelAdapter:
     def test_abstract_methods(self):
         """测试抽象方法"""
         from abc import ABC
-        from agentbus.channels.base import ChannelAdapter
+        from channels.base import ChannelAdapter
         
         # 验证ChannelAdapter是抽象基类
         assert issubclass(ChannelAdapter, ABC)

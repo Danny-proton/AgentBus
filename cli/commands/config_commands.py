@@ -14,9 +14,9 @@ from pathlib import Path
 from datetime import datetime
 from loguru import logger
 
-from agentbus.config.config_manager import ConfigManager, ConfigProfile, ConfigFormat
-from agentbus.config.config_types import EnvironmentType, ValidationResult
-from agentbus.cli.commands.command_parser import AdvancedCommandParser, CommandRegistry
+from config.config_manager import ConfigManager, ConfigProfile, ConfigFormat
+from config.config_types import EnvironmentType, ValidationResult
+from cli.commands.command_parser import AdvancedCommandParser, CommandRegistry
 
 
 class ConfigCommands:

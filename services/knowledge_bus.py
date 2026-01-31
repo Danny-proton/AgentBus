@@ -20,7 +20,7 @@ from pathlib import Path
 import aiofiles
 from loguru import logger
 
-from ..core.settings import settings
+from core.settings import settings
 
 # 导出所有必要的类和方法
 __all__ = [
