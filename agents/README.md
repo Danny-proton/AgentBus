@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 30450221009030f4f0e61b87e0f247b1c61daa74d12d1532544bdc278f3a97ab551097c8bf022074ca6ee6eb79d5939cffa0d9fcd3229dc72d3308fe2cef9fbc76905b9eae3af9
-    ReservedCode2: 3046022100a72838b946ddb60b8b9267fb275a838bdf0e8f3ad32d48cd5750d5487657864a022100d82473a6ee7ba8d6aaa79f4d030355c5b3351837e11318242c81d16fe567464b
----
-
 # AgentBus Agent System Framework
 
 基于Moltbot架构的完整Agent系统框架，提供Agent生命周期管理、通信机制、状态监控、资源管理和插件系统的完整解决方案。

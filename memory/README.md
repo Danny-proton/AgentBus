@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: 5edd6666bd17c4cc9135a4816770ae6d
-    PropagateID: 5edd6666bd17c4cc9135a4816770ae6d
-    ReservedCode1: 3046022100800a44874428626a0f829f87d7e9ab7f1ff7c3b7807bd098a92ff9aa675cecb0022100ed0960cf15fe3e98548d10906f80ac4c58ea94fb2b3287cfbaf175992fcb94cf
-    ReservedCode2: 3046022100ede259660e0a78ecd1eaaf762eb8f8c4510f8a83844ee169224188fc1e863119022100fda2a9a2a2e9b93ed5e90d8970822b22e449a01ff9691014d9721942783b4097
----
-
 # AgentBus Memory System Enhancement
 
 基于Moltbot的Memory系统架构，本项目对现有的AgentBus内存管理功能进行了全面增强和迁移。

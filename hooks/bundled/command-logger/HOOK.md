@@ -1,31 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3045022100c0585b00619e323af9d77ce02b6111a92cda9f15f177d197997ff6ee4d00dc7002202c86188e631e754aaf39e0f61e6ec61e1a4dd244bb28238b4e45bf92d1dd4d08
-    ReservedCode2: 3045022100d599b018677f7987a75803c99231f0b9b0e80735ba5ade8b35c9a5a4927ba2e402200b9ed6baef38e2de7c358adba97bba47e8cff4ba58951a3ccc52e400536e1b43
-description: Log all commands for debugging and analytics
-homepage: https://docs.agentbus.dev/hooks/command-logger
-metadata:
-    agentbus:
-        emoji: "\U0001F4DD"
-        events:
-            - command
-        priority: -500
-        requires:
-            config:
-                - logging.enabled
-        tags:
-            - logging
-            - analytics
-            - debugging
-        timeout: 10
-name: command-logger
----
-
 # Command Logger Hook
 
 Logs all command events for debugging, analytics, and system monitoring.

@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3046022100b9069855dfa3e54bc8966b72dc7c74934093c3d1122e6f6b0679e88edf9c5626022100fca388d0038a4ee5a11f7e74f2de7b61785bd114f83a96068c23ae74d0ceba8c
-    ReservedCode2: 30450221009ffadd4e758baa98d481772be8e6b904f645f3ab8297588025bef400af5c1821022022d80317c7ddac96a60d79ec3b5c33692e665258db37d40dd0871be30cf52b7a
----
-
 # AgentBus 守护进程系统
 
 AgentBus 守护进程是一个跨平台的服务管理系统，支持 Linux (systemd)、macOS (launchd) 和 Windows (Task Scheduler)。

@@ -1,5 +1,6 @@
-
+# ===========================
 # Python
+# ===========================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -17,29 +18,225 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+
+# ===========================
 # Virtual Environments
+# ===========================
 venv/
 env/
 ENV/
 .env/
 .venv/
+virtualenv/
 
+# ===========================
 # Environment Variables
+# ===========================
 .env
+.env.local
+.env.*.local
 
+# ===========================
+# IDEs and Editors
+# ===========================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ===========================
+# Operating Systems
+# ===========================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===========================
+# Node.js / Frontend
+# ===========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# Build outputs
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# ===========================
 # AgentBus Specific
+# ===========================
+# Workspaces and data
 workspace/
 test_workspace/
 data/
+data/memory/*.md
+!data/memory/.gitkeep
+
+# Logs
 logs/
+*.log
+*.log.*
+agentbus.log*
+
+# Temporary files
 temp/
+tmp/
+*.tmp
 archive/
 
-# IDE
-.vscode/
-.idea/
+# Test outputs
+test_output.txt
+test_error.txt
+test_*.txt
+
+# Configuration backups
+*.backup
+*.bak
+config/*.backup
+channels_config.json.backup
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Session files
+sessions/*.json
+!sessions/.gitkeep
+
+# Cache directories
+.cache/
+*.cache
+
+# ===========================
+# AI Model Files
+# ===========================
+# Model weights and checkpoints
+models/*.bin
+models/*.pt
+models/*.pth
+models/*.ckpt
+models/*.safetensors
+!models/.gitkeep
+
+# Vector databases
+*.faiss
+*.index
+chroma_db/
+vector_store/
+
+# ===========================
+# Documentation Build
+# ===========================
+docs/_build/
+docs/.doctrees/
+site/
+
+# ===========================
+# Miscellaneous
+# ===========================
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# pytype
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ===========================
+# Project Maintenance Scripts
+# ===========================
+# Keep these scripts but ignore their outputs
+remove_watermarks.py
+standardize_imports.py
+revert_imports.py
+debug_snapshot.py
+verify_*.py

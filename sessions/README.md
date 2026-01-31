@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 304502202194ce72d8740da2fa93dad2c5e73505ddb3dc9ea37ee85297f261762331c8e402210085219689863b9ea2829fe28d5628a8c2230d0a8cd4c29258c4c1b057bf8448f2
-    ReservedCode2: 30450220342f3ed896e0f150885b0c7a3f1cc693f0de4a1eb930854338602f6bc5863a84022100dec17da6f485cd93176f4cc8d8d13b4074b8a36e6f3abffea084c1b1f8f38d4f
----
-
 # AgentBus 会话管理系统
 
 AgentBus 会话管理系统为 AgentBus 提供了完整的会话管理功能，包括会话创建、保存、恢复、清理等核心功能，支持多用户会话和并发管理，实现了会话过期和自动清理机制。

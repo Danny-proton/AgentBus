@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 304502201e3e28de43249b90b72cbaab13898bd6e4bf33cf047e9b6e40b3452447e34a33022100faf813292c0048d4b9eeab40d2c434d118cfc83f7bb2da4f9251423b3e006d0e
-    ReservedCode2: 30450221008c2fe9fae3d3858752bfe3f1f4ac34a19761092ad5021cbf5cbc390c053203ee0220651874b11cb9cf64fed5864f5270a1d1248172bfbe56f0917b94956256069777
----
-
 # AgentBus 配置管理系统
 
 基于 Moltbot 配置系统设计的 AgentBus 配置管理解决方案。

@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3045022100ade6ba40590af321e8530b9df0bf52c9355d71a112b0e01f0377aec8bf5a3e5f0220364216b749c45544e15764393ab7592e62040984ecdd4ec9c9734db6fcacfca9
-    ReservedCode2: 304502204730a459e12e0762c3e71295a549ec73589a049ab3412c5ab098fdeca3e862b20221009986d2710537e03277f82fdcb45058f6d6d605e95fcf970344fa8bf97848e520
----
-
 # AgentBus插件框架测试套件
 
 这个目录包含了AgentBus插件框架的完整测试套件，用于验证插件系统的所有核心功能。

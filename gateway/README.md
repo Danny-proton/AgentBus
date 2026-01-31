@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3045022032799b93823b5c9a4d2aaa21e9b2e9ab125047a90cb358805ad33522f603592f0221008b1b2fcee5960dbf6f4944497b048db5fb341b850c370d0f875d2e192f1912d1
-    ReservedCode2: 3045022100e90bf2ada7b45a874c664ef564524d4c7037718841ac37481e65ce6016fc3e150220424e6004f9fc0fd9150f9f1afe1e86a4964fb8ee1e80a4b56b487dabd00311b2
----
-
 # Agentbus Gateway System
 
 基于Moltbot Gateway架构的完整网关系统，提供客户端认证、聊天处理、WebSocket通信和API接口管理功能。

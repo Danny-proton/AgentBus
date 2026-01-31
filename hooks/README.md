@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3045022043c958e31917355de36d8e452922091e99074be28f5da3a63745f37fae2e358c0221008005c946ac31fc7a1acc3278c1c91ed4c095b03161984852774a78cbdb40a0b3
-    ReservedCode2: 3045022100cd545331faac9b8357715cf635194c2306eff190740246765559387b97dc05ef022013ae9f586c41a3813dc905b862e39eef0a908aa25bf87c115d25df169591b3bd
----
-
 # AgentBus Hook System
 
 一个完整的钩子系统，为AgentBus提供可扩展的、事件驱动的功能扩展。

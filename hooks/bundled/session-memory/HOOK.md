@@ -1,31 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3046022100ced6ce4a794ba5514257bac24e4b7f530df665ee8e9c5a329b4148f7dc9533530221008e22d6fb71acba889877bc31a30d85d8e0f34d68040b9d453e8d35e810a74ead
-    ReservedCode2: 3046022100bbfc1d047b72f44bf7ecc47320720138af3ebac387712f74a6a06306c03fa378022100f6b07164f25a00b68aed7fb7ccf476e6a14641662bc7a51f448c21cdf457a0bd
-description: Save session context to memory files when sessions end
-homepage: https://docs.agentbus.dev/hooks/session-memory
-metadata:
-    agentbus:
-        emoji: "\U0001F4BE"
-        events:
-            - session:end
-        priority: 200
-        requires:
-            config:
-                - workspace.dir
-        tags:
-            - memory
-            - persistence
-            - backup
-        timeout: 30
-name: session-memory
----
-
 # Session Memory Hook
 
 Automatically saves session context to memory files when sessions end.

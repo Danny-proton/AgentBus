@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 30460221009bb107a70c908fceb90d9ca67a7169b083d3689e6ca3e5cde92fc33262591ce602210095757f24c25a5a93a5a307e6684d7e269775d7c82610cf51553d74f6abf28c00
-    ReservedCode2: 3046022100c1ab710a68f5fab9b44aa7d39ab4ef379aa4624d14fc563238a218f121d5eca5022100cee859592868c05c13513a66c7cd05dd175279819d808d3f35e7a9469ab39dd1
----
-
 # AgentBus 基础设施系统
 
 基于Moltbot的Infrastructure系统，提供完整的基础设施功能模块。

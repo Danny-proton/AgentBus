@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 304402204626105ad0548f683d14023cde6ddefda6b5f73402e0d5c6c4327e61ba7620be0220659ec3422b94910dbf0bc06d4fb3bfed07f4f5d7414f34c238611bf99edbb771
-    ReservedCode2: 304402202022163d638b802ba70adf442e52274f1f7c2e5e3f94a4a55314018eb42371780220781cfc223606dc90399dbd379a75e74825d4ab008e9f26dac1d9f6eea199c4e2
----
-
 # 🎉 AgentBus任务调度系统 - 实现完成报告
 
 ## 📋 任务完成总结

@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3046022100a7f6b95210b10da56faf4dfb08fa3da3851ba4763e20ad20032c887ca9a4aaed022100abf5546589e8bcd00976850205a9ac839180f1e09968f1382ba175a137220c30
-    ReservedCode2: 30440220104d519192806907fa62d5b345224143b3cef0f2ecaf209678e619ec68f8365202207379a16d75780c21e386f2c27b74c5d467d0823cde5e1f92ce3eae11315cb858
----
-
 # Agentbus 自动回复系统
 
 基于Moltbot自动回复系统的完整Python实现，提供完整的命令检测、消息分发、群组激活控制、媒体处理和回复策略管理功能。

@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3046022100d8f95ca719d25c89a4c79175dc6717c5c999ffb945dcb2c5bfebe858f89e52470221009efa2bf3b9f5576dfb1d2304073bec1bebe134379534b3d2218e00ab6a10b08b
-    ReservedCode2: 3044022050e581e80468f2540c3ddef1995edc9a34c99c1d3b81e68ab4d8edc028d363690220369958a9604bf64a152e2b02cc954a1aa26ae49f3305355816769d2ee452ee50
----
-
 # AgentBus技能系统框架
 
 基于Moltbot的SKILL.md概念实现的AgentBus技能系统框架，提供完整的技能发现、加载、管理和生命周期控制功能。

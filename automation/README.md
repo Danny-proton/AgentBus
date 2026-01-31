@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3046022100cbfe04609bbf107d0612d720018c13428fd3cf5defc0b53d83a692eadd4e9c4a0221008b106ce1d6acd797ba4f6d868cc4dc640309746acc676d4b1c8162a2e5ada1b5
-    ReservedCode2: 3044022056167ec506624119aca24839eecb02d5756f747caab14a65594307b56e043210022018c6e23b08baa7dd962366d042eb1ffd899d43818703cd7e2b11246af92315aa
----
-
 # AgentBus Browser Automation System
 
 基于Moltbot实现的AgentBus浏览器自动化系统，提供完整的浏览器自动化解决方案。

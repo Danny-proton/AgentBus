@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 30450220376f859d8469e968c8a4bedc556e3b363c110b691149d45e619a6e9101ea6952022100f05e66556adf6a82b17013288fba7dcee51040ebb8de75988e28e26d1afa175e
-    ReservedCode2: 3045022100a88b778a623098060057b8458497b3b1a1d4bced618893dc3a6521684269a07502203570b33e857a3e61cdba6f5c528550eb2abfe32b9d18a0994e8316b1d52a8854
----
-
 # Changelog
 
 All notable changes to the AgentBus Browser Automation System will be documented in this file.

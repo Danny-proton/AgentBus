@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3044022013f7b425dd349a9d3e85e8b7b3493613d3601b58edb0a2ce60850dab4e4fc6f60220756b5357e9de3df6559755908e1a61e3a89d4a2941980085c6f7653a32a5d5cb
-    ReservedCode2: 304402201af8642af92489a85adf7dbaeac93d654bd693529adf5ceb2986191d2179562d02201c9b815a172e8d8ca1e323b676bbbda778a170331d445ebe507b7826096f7064
----
-
 # AgentBus 媒体理解系统
 
 基于Moltbot架构的完整媒体理解功能实现，支持图像、音频、视频和文档的智能分析。

@@ -1,14 +1,3 @@
----
-AIGC:
-    ContentProducer: Minimax Agent AI
-    ContentPropagator: Minimax Agent AI
-    Label: AIGC
-    ProduceID: "00000000000000000000000000000000"
-    PropagateID: "00000000000000000000000000000000"
-    ReservedCode1: 3044022046e5f415f2c0d8a09f21f34792db45460155ed457ba8e7163de413ec54fc0a8302203e6b7a39bf0c64839c86da03d43a7f5b7dcbc7d60c4754d713c7633c98466d17
-    ReservedCode2: 304402203eedabc6f290cddbaea49850c22a2a8a714a95dc494b0804c32449032c3f2ffd0220145740fbd43532da7f1411a90bf3afe897536e63aed51b2e48e0a94d6d341b42
----
-
 # AgentBus任务调度系统
 
 基于Moltbot的任务调度功能，为AgentBus提供完整的任务调度和定时任务系统。
