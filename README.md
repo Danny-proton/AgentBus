@@ -268,6 +268,11 @@ print('技能管理器正常')
 - **[本地模型配置](QUICKSTART_LOCAL_MODELS.md)** - 471行本地模型配置指南
 - **[完成报告](FINAL_COMPLETION_REPORT.md)** - 项目完成状态总结
 
+### 扩展开发文档
+- **[快速扩展指南](docs/QUICK_EXTENSION_GUIDE.md)** - 5分钟快速上手扩展开发
+- **[完整开发指南](docs/EXTENSION_DEVELOPMENT_GUIDE.md)** - 深入的扩展开发参考文档
+- **[开发示例](examples/)** - 插件、Agent、网页测试等实用示例
+
 ### API文档
 启动服务后访问：
 - Swagger UI: http://localhost:8000/docs
@@ -277,6 +282,7 @@ print('技能管理器正常')
 ### 管理界面
 - **Web管理界面**: http://localhost:8000/management
 - **CLI管理**: `python -m agentbus.core.app --mode cli`
+
 
 ## 🏭 生产部署
 
