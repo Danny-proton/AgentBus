@@ -9,6 +9,7 @@ tests/web_explorer/
 ├── mock_server.py           # Mock Web 服务器
 ├── conftest.py              # pytest 配置和 fixtures
 ├── test_config.json         # 测试配置
+├── test_mock_server.py      # Mock Server 烟雾测试 ✅ 可立即运行
 ├── test_acceptance.py       # 验收测试
 ├── test_atlas_manager.py    # AtlasManager 单元测试
 ├── test_browser_manager.py  # BrowserManager 单元测试
