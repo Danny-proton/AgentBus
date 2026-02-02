@@ -1,0 +1,23 @@
+{
+    "test_config": {
+        "mock_server_url": "http://127.0.0.1:8080",
+        "max_depth": 5,
+        "max_nodes": 20,
+        "timeout": 60,
+        "headless": true
+    },
+    "expected_pages": [
+        "/",
+        "/products",
+        "/products/1",
+        "/products/2",
+        "/products/3",
+        "/login",
+        "/dashboard",
+        "/about",
+        "/deadend",
+        "/loop-a",
+        "/loop-b"
+    ],
+    "expected_node_count": 11
+}

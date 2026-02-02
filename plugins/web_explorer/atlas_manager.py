@@ -443,25 +443,45 @@ class AtlasManagerPlugin(AgentBusPlugin):
         try:
             for task in tasks:
                 task_id = task.get("id", f"task_{datetime.now().timestamp()}")
-                task_file = todos_dir / f"{task_id}.json"
+                
+                # 判断是任务还是想法
+                is_idea = task.get("type") in ["boundary", "injection", "security", "permission", "performance"]
+                
+                if is_idea:
+                    # 保存为 .idea 文件
+                    task_file = todos_dir / f"{task_id}.idea"
+                else:
+                    # 保存为 .task 文件
+                    task_file = todos_dir / f"{task_id}.task"
                 
                 task["status"] = "pending"
                 task["created_at"] = task.get("created_at", datetime.now().isoformat())
                 
                 task_file.write_text(json.dumps(task, indent=2, ensure_ascii=False))
             
-            self.logger.info(f"推送 {len(tasks)} 个任务")
+            self.logger.info(f"推送 {len(tasks)} 个任务/想法")
             return True
             
         except Exception as e:
             self.logger.error(f"推送任务失败: {e}")
             return False
     
-    async def _pop_tasks(self, todos_dir: Path, processing_dir: Path) -> List[Dict[str, Any]]:
-        """从队列获取任务"""
+    async def _pop_tasks(self, todos_dir: Path, processing_dir: Path, only_tasks: bool = True) -> List[Dict[str, Any]]:
+        """
+        从队列获取任务
+        
+        Args:
+            todos_dir: 待办目录
+            processing_dir: 处理中目录
+            only_tasks: 是否只获取.task文件(默认True,Phase 2时设为False获取.idea)
+        """
         try:
             # 获取所有待办任务
-            task_files = list(todos_dir.glob("*.json"))
+            if only_tasks:
+                task_files = list(todos_dir.glob("*.task"))
+            else:
+                # Phase 2: 获取所有.idea文件
+                task_files = list(todos_dir.glob("*.idea"))
             
             if not task_files:
                 return []
